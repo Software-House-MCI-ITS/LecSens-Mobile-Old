@@ -3,6 +3,9 @@ import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/view/home_screen.dart';
 import 'package:lecsens/view/login_screen.dart';
 import 'package:lecsens/view/splash_screen.dart';
+import 'package:lecsens/view/signup_screen.dart';
+import 'package:lecsens/view/ambil_data_screen.dart';
+import 'package:lecsens/view/detail_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -13,9 +16,18 @@ class Routes {
       case (RouteNames.login):
         return MaterialPageRoute(
             builder: (BuildContext context) => const LoginScreen());
-      case (RouteNames.splashScreen):
+      case (RouteNames.signup):
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SignupScreen());
+      case (RouteNames.splash):
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashScreen());
+      case (RouteNames.ambilData):
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const AmbilDataScreen());
+      case (RouteNames.detail):
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const DetailScreen());
       
       default:
         return MaterialPageRoute(
