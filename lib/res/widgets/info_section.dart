@@ -5,9 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'date_picker.dart' as dp;
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dt;
 import 'chart_card.dart';
+import 'package:lecsens/utils/routes/routes_names.dart';
 
 class InfoSection extends StatefulWidget {
-  const InfoSection({Key? key}) : super(key: key);
+  const InfoSection({super.key});
 
   @override
   _InfoSectionState createState() => _InfoSectionState();
@@ -43,7 +44,7 @@ class _InfoSectionState extends State<InfoSection> {
               ),
               Container(
                 height: 100,
-                padding: EdgeInsets.only(left: 14, right: 14),
+                padding: const EdgeInsets.only(left: 14, right: 14),
                 child: dt.DatePicker(
                   DateTime.now(),
                   width: 60,
@@ -64,7 +65,7 @@ class _InfoSectionState extends State<InfoSection> {
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       child: Row(
                         children: [
                           TextButton(
@@ -74,19 +75,19 @@ class _InfoSectionState extends State<InfoSection> {
                               });
                             },
                             style: TextButton.styleFrom(
-                              padding: EdgeInsets.only(left: 15),
-                              minimumSize: Size(50, 30),
+                              padding: const EdgeInsets.only(left: 15),
+                              minimumSize: const Size(50, 30),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               backgroundColor: Colors.transparent,
                               overlayColor: Colors.transparent,
                             ),
-                            child: Row(
+                            child: const Row(
                               children: [
                                 Icon(Icons.info, color: Colors.black),
                               ],
                             ),
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Align(
                               alignment: Alignment.topRight,
                               child: Text(
@@ -103,7 +104,7 @@ class _InfoSectionState extends State<InfoSection> {
                     ),
                     Visibility(
                       visible: _infoVisible,
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.only(left: 16, right: 16, bottom: 25),
                         child: Text(
                           'Menampilkan hasil terakhir dalam cemaran dalam sehari.\n\nKetarangan :\nAman  = Kurang dari x Ppm\nBahaya  = Lebih dari X Ppm\n\nBatas aman mungkin berbeda setiap wilayah/negara, acuan yang di tampilkan hanya sebagai batas yang umum digunakan.',
@@ -137,7 +138,7 @@ class _InfoSectionState extends State<InfoSection> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 30),
+                            padding: const EdgeInsets.only(top: 20, bottom: 30),
                             child: Container(
                               height: 4,
                               width: 200,
@@ -152,8 +153,8 @@ class _InfoSectionState extends State<InfoSection> {
                   ],
                 ),
               ),
-              ChartCard(title: 'Harian'),
-              ChartCard(title: 'Mingguan'),
+              const ChartCard(title: 'Harian'),
+              const ChartCard(title: 'Mingguan'),
             ],
           ),
         ),

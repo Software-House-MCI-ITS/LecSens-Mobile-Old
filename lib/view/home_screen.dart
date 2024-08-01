@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lecsens/utils/routes/routes_names.dart';
 
 import '../res/widgets/header.dart';
 import '../res/widgets/info_section.dart';
@@ -53,6 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
         const InfoSection(),
         const PengaturanSection(),
       ][currentPageIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, RouteNames.ambilData);
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 }

@@ -1,4 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lecsens/utils/routes/routes_names.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:lecsens/utils/utils.dart';
 
 // Define a custom Form widget.
 class LoginForm extends StatefulWidget {
@@ -10,34 +14,24 @@ class LoginForm extends StatefulWidget {
   }
 }
 
-// Define a corresponding State class.
-// This class holds data related to the form.
 class LoginFormState extends State<LoginForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
-          // Add TextFormFields and ElevatedButton here.
           Padding(padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
             child: TextFormField(
               decoration: const InputDecoration(
-                hintText: 'Serial Number',
+                hintText: 'Email',
               ),
-              // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter serial number';
+                  return 'Harap isi dengan email yang valid';
                 }
                 return null;
               },
@@ -63,7 +57,7 @@ class LoginFormState extends State<LoginForm> {
               obscureText: _obscureText,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter password';
+                  return 'Harap isi password dengan benar';
                 }
                 return null;
               },
@@ -84,6 +78,44 @@ class LoginFormState extends State<LoginForm> {
             child: const Text(
               'Login',
               style: TextStyle(color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 10),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Belum punya akun? ',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                TextSpan(
+                  text: 'Signup',
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.pushNamed(context, RouteNames.signup); 
+                    },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Mengalami masalah saat login ? ',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                TextSpan(
+                  text: 'Hubungi kami',
+                  style: TextStyle(color: Colors.blue),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      Utils.launchUrl(context, 'https://www.google.com');
+                    },
+                ),
+              ],
             ),
           ),
         ],

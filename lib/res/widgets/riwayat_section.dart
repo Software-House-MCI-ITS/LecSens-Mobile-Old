@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lecsens/view/detail_screen.dart';
 
 class LecsensData {
   final String title;
@@ -55,14 +56,13 @@ class RiwayatSection extends StatelessWidget {
                     color: Colors.blue,
                   ),
                 ),
-                Spacer(), // This will push the TextFormField to the right
+                Spacer(),
                 SizedBox(
-                  width: 150, // Specify the width for the TextFormField
+                  width: 150,
                   child: TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Cari disini ...',
                     ),
-                    // The validator receives the text that the user has entered.
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter input';
@@ -74,7 +74,6 @@ class RiwayatSection extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16),
-            // listview
             ListView.builder(
               shrinkWrap: true,
               itemCount: lecsensData.length,
@@ -82,6 +81,14 @@ class RiwayatSection extends StatelessWidget {
                 return Card(
                   margin: EdgeInsets.all(8),
                   child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(),
+                        ),
+                      );
+                    },
                     title: Text(lecsensData[index].title),
                     subtitle: Text('ID : ${lecsensData[index].id} | ${lecsensData[index].date}'),
                     trailing: Text('${lecsensData[index].status}Ppm'),
