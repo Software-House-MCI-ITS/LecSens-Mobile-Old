@@ -18,6 +18,7 @@ dependencies:
   date_picker_timeline: ^1.2.6
   syncfusion_flutter_charts: ^26.2.5+1
   provider: ^6.0.0
+  url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:
@@ -32,4 +33,6 @@ flutter:
 
   assets:
     - lib/res/images/lecsens_logo.png
+    - lib/res/images/ambil_data.png
+    - lib/res/images/alat.png
     
