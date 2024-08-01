@@ -1,43 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
-
-    <!-- Logo Image -->
-    <ImageView
-        android:id="@+id/splash_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/lecsens_logo" />
-
-    <!-- Description Text -->
-    <TextView
-        android:id="@+id/splash_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/splash_logo"
-        android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:text="Detektor cemaran pada air yang portable, mudah digunakan, cepat, dan akurat"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
-
-    <!-- Footer Text -->
-    <TextView
-        android:id="@+id/splash_footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:text="© 2022 Tim Riset. All rights reserved v22.1"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-</RelativeLayout>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/transparent" />    
+    <!-- <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher" />
+    </item> -->
+</layer-list>
