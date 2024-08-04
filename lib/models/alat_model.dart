@@ -56,3 +56,25 @@ class Alat {
     };
   }
 }
+
+class AlatList {
+  List<Alat> alatList;
+
+  AlatList({required this.alatList});
+
+  factory AlatList.fromJson(List<dynamic> json) {
+    List<Alat> alatList = <Alat>[];
+    alatList = json.map((i) => Alat.fromJson(i)).toList();
+
+    return AlatList(alatList: alatList);
+  }
+
+  List<Map<String, dynamic>> toJson() {
+    List<Map<String, dynamic>> result = <Map<String, dynamic>>[];
+    for (var element in alatList) {
+      result.add(element.toJson());
+    }
+
+    return result;
+  }
+}

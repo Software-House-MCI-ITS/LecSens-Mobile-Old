@@ -36,3 +36,21 @@ class Access {
     };
   }
 }
+
+class AccessList {
+  List<Access> accessList;
+
+  AccessList({
+    required this.accessList,
+  });
+
+  factory AccessList.fromJson(List<dynamic> json) {
+    List<Access> accessList = <Access>[];
+    accessList = json.map((e) => Access.fromJson(e)).toList();
+    return AccessList(accessList: accessList);
+  }
+
+  List<Map<String, dynamic>> toJson() {
+    return accessList.map((e) => e.toJson()).toList();
+  }
+}

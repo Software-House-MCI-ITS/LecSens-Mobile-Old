@@ -98,3 +98,21 @@ class LecsensData {
     };
   }
 }
+
+class LecsensList {
+  List<LecsensData> lecsensList;
+
+  LecsensList({
+    required this.lecsensList,
+  });
+
+  factory LecsensList.fromJson(List<dynamic> json) {
+    List<LecsensData> lecsensList = <LecsensData>[];
+    lecsensList = json.map((e) => LecsensData.fromJson(e)).toList();
+    return LecsensList(lecsensList: lecsensList);
+  }
+
+  List<Map<String, dynamic>> toJson() {
+    return lecsensList.map((e) => e.toJson()).toList();
+  }
+}

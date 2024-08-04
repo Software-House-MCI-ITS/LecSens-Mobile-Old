@@ -29,3 +29,21 @@ class Role {
     };
   }
 }
+
+class RoleList {
+  List<Role> roleList;
+
+  RoleList({
+    required this.roleList,
+  });
+
+  factory RoleList.fromJson(List<dynamic> json) {
+    List<Role> roleList = <Role>[];
+    roleList = json.map((e) => Role.fromJson(e)).toList();
+    return RoleList(roleList: roleList);
+  }
+
+  List<Map<String, dynamic>> toJson() {
+    return roleList.map((e) => e.toJson()).toList();
+  }
+}
