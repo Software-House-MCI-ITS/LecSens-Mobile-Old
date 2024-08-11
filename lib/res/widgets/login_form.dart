@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lecsens/utils/utils.dart';
+import 'package:lecsens/viewModel/auth_view_model.dart';
 
 // Define a custom Form widget.
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final AuthViewModel authviewmodel;
+  const LoginForm({super.key, required this.authviewmodel});
 
   @override
   LoginFormState createState() {
@@ -15,60 +17,70 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-  bool _obscureText = true;
+  final ValueNotifier<bool> _obsecureNotifier = ValueNotifier<bool>(false);
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Column(
-        children: <Widget>[
+        children: [
           Padding(padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
             child: TextFormField(
+              controller: _emailController,
+              focusNode: _emailFocus,
+              keyboardType: TextInputType.emailAddress,
+              onFieldSubmitted: (value) {
+                Utils.changeNodeFocus(context,
+                  current: _emailFocus, next: _passwordFocus);
+              },
               decoration: const InputDecoration(
+                label: Text('Email'),
                 hintText: 'Email',
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Harap isi dengan email yang valid';
-                }
-                return null;
-              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(50, 10, 50, 30),
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey,
+            child: ValueListenableBuilder(
+              valueListenable: _obsecureNotifier,
+              builder: ((context, value, child) {
+                return TextFormField(
+                  controller: _passwordController,
+                  focusNode: _passwordFocus,
+                  obscureText: _obsecureNotifier.value,
+                  obscuringCharacter: "*",
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obsecureNotifier.value ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        _obsecureNotifier.value = !_obsecureNotifier.value;
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
-                ),
-              ),
-              obscureText: _obscureText,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Harap isi password dengan benar';
-                }
-                return null;
-              },
-            ),
+                );
+              }),
+            )
           ),
           ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Processing Data')),
-                );
+              if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+                Utils.showSnackBar(context, 'Email dan Password tidak boleh kosong');
+              } else {
+                final Map<String, dynamic> data = {
+                  'email': _emailController.text.toString(),
+                  'password': _passwordController.text.toString(),
+                };
+                widget.authviewmodel.login(data, context);
+                debugPrint("hit API");
               }
             },
             style: ElevatedButton.styleFrom(
