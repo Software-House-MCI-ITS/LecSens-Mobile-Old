@@ -3,7 +3,7 @@ import 'package:lecsens/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserViewModel with ChangeNotifier {
-  Future<bool> saveUser(User user) async {
+  Future<bool> saveCurrentUser(User user) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString('token', user.token.toString());
     notifyListeners();

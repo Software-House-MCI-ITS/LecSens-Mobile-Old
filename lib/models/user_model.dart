@@ -17,7 +17,7 @@ class UserFields {
 
 class User {
   String? token;
-  int? id;
+  String? id;
   String? userName;
   String? email;
   String? fullName;

@@ -14,7 +14,7 @@ class AlatFields {
 }
 
 class Alat {
-  int? id;
+  String? id;
   String? owner;
   String? namaAlat;
   int? status;

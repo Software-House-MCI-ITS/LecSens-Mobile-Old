@@ -4,6 +4,7 @@ import 'package:lecsens/viewModel/user_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
+import 'package:lecsens/models/user_model.dart';
 
 class AuthViewModel with ChangeNotifier {
   final _auth = AuthRepository();
@@ -28,7 +29,9 @@ class AuthViewModel with ChangeNotifier {
     setLoginLoading(true);
     _auth.apiLogin(data).then((value) {
       final userPreference = Provider.of<UserViewModel>(context, listen: false);
-      userPreference.saveUser(value);
+
+      User user = User.fromJson(value);
+      userPreference.saveCurrentUser(user);
 
       Utils.showSnackBar(context, "Login success");
       setLoginLoading(false);

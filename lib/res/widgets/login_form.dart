@@ -17,7 +17,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
-  final ValueNotifier<bool> _obsecureNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _obsecureNotifier = ValueNotifier<bool>(true);
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -80,7 +80,6 @@ class LoginFormState extends State<LoginForm> {
                   'password': _passwordController.text.toString(),
                 };
                 widget.authviewmodel.login(data, context);
-                debugPrint("hit API");
               }
             },
             style: ElevatedButton.styleFrom(

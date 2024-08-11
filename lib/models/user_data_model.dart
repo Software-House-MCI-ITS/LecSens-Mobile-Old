@@ -10,7 +10,7 @@ class UserDataFields {
 }
 
 class UserData {
-  int? id;
+  String? id;
   bool? gender;
   String? jabatan;
 

@@ -10,7 +10,7 @@ class AccessFields {
 }
 
 class Access {
-  int? id;
+  String? id;
   int? userID;
   int? alatID;
 

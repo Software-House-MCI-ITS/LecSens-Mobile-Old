@@ -22,9 +22,14 @@ class NetworkApiServices extends BaseApiServices {
   @override
   Future getPostApiResponse(String url, dynamic data) async {
     dynamic responsejson;
+    dynamic requestjson = jsonEncode(data);
     try {
       final response = await http
-          .post(Uri.parse(url), body: data)
+          .post(Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: requestjson)
           .timeout(const Duration(seconds: 10));
       responsejson = responseJson(response);
     } on SocketException {
@@ -67,9 +72,10 @@ class NetworkApiServices extends BaseApiServices {
     switch (response.statusCode) {
       case 200:
         dynamic jsonResponse = jsonDecode(response.body);
-        return jsonResponse;
+        dynamic data = jsonResponse['data'];
+        return data;
       case 400:
-        throw BadRequestException("achi request nhi hai yeh");
+        throw BadRequestException("User not found");
       default:
         throw InternetException("${response.statusCode} : ${response.reasonPhrase}");
     }

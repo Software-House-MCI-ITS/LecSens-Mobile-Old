@@ -24,7 +24,7 @@ class LecsensDataFields {
 }
 
 class LecsensData {
-  int? id;
+  String? id;
   int? alatID;
   int? userID;
   String? lokasi;
