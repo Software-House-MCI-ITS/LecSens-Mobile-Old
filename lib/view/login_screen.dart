@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../res/widgets/login_form.dart';
 import 'package:lecsens/res/widgets/copyright_footer.dart';
+import 'package:lecsens/viewModel/auth_view_model.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final authviewmodel = Provider.of<AuthViewModel>(context);
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -21,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             Image.asset('lib/res/images/lecsens_logo.png'),
             const SizedBox(height: 30),
-            LoginForm(),
+            LoginForm(authviewmodel: authviewmodel),
           ],
         ),
       ),

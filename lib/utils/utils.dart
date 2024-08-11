@@ -41,4 +41,10 @@ class Utils {
     Utils.showSnackBar(context, 'Data uploaded successfully');
     Navigator.pushNamed(context, RouteNames.home);
   }
+
+  static void changeNodeFocus(BuildContext context,
+      {FocusNode? current, FocusNode? next}) {
+    current!.unfocus();
+    FocusScope.of(context).requestFocus(next);
+  }
 }

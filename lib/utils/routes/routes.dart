@@ -6,6 +6,7 @@ import 'package:lecsens/view/splash_screen.dart';
 import 'package:lecsens/view/signup_screen.dart';
 import 'package:lecsens/view/ambil_data_screen.dart';
 import 'package:lecsens/view/detail_screen.dart';
+import 'package:lecsens/view/verifikasi_email_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -28,6 +29,9 @@ class Routes {
       case (RouteNames.detail):
         return MaterialPageRoute(
             builder: (BuildContext context) => const DetailScreen());
+      case (RouteNames.emailVerification):
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const VerifikasiEmailScreen());
       
       default:
         return MaterialPageRoute(
