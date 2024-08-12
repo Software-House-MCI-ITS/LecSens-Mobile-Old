@@ -11,9 +11,11 @@ class AuthViewModel with ChangeNotifier {
 
   bool _loginLoading = false;
   bool _signUpLoading = false;
+  bool _sendingVerificationEmail = false;
 
   get loginLoading => _loginLoading;
   get signUpLoading => _signUpLoading;
+  get sendingVerificationEmail => _sendingVerificationEmail;
 
   void setLoginLoading(bool value) {
     _loginLoading = value;
@@ -25,34 +27,52 @@ class AuthViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setSendingVerificationEmail(bool value) {
+    _sendingVerificationEmail = value;
+    notifyListeners();
+  }
+
   Future<void> login(dynamic data, BuildContext context) async {
     setLoginLoading(true);
     _auth.apiLogin(data).then((value) {
-      final userPreference = Provider.of<UserViewModel>(context, listen: false);
+      if (value['message'] == 'pengguna belum diverifikasi') {
+        setLoginLoading(false);
+        Navigator.pushNamed(context, RouteNames.emailVerification);
+      } else {
+        final userPreference = Provider.of<UserViewModel>(context, listen: false);
 
-      User user = User.fromJson(value);
-      userPreference.saveCurrentUser(user);
+        User user = User.fromJson(value);
+        userPreference.saveCurrentUser(user);
 
-      Utils.showSnackBar(context, "Login success");
-      setLoginLoading(false);
-
-      Navigator.pushNamed(context, RouteNames.home);
+        Utils.showSnackBar(context, "Login success");
+        setLoginLoading(false);
+        Navigator.pushNamed(context, RouteNames.home);
+      }
     }).onError((error, stackTrace) {
       Utils.showSnackBar(context, error.toString());
       setLoginLoading(false);
     });
   }
 
-  Future<void> apiSignUp(dynamic data, BuildContext context) async {
+  Future<void> signUp(dynamic data, BuildContext context) async {
     setSignUpLoading(true);
     _auth.signUp(data).then((value) {
       Utils.showSnackBar(context, "Sign up success");
-
-      Navigator.pushNamed(context, RouteNames.home);
+      Navigator.pushNamed(context, RouteNames.login);
       setSignUpLoading(false);
     }).onError((error, stackTrace) {
       Utils.showSnackBar(context, error.toString());
       setSignUpLoading(false);
+    });
+  }
+
+  Future<void> sendVerificationEmail(String email, BuildContext context) async {
+    setSendingVerificationEmail(true);
+    _auth.sendVerificationEmail(email).then((value) {
+      setSendingVerificationEmail(false);
+    }).onError((error, stackTrace) {
+      Utils.showSnackBar(context, error.toString());
+      setSendingVerificationEmail(false);
     });
   }
 }

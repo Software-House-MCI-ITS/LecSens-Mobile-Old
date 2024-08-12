@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lecsens/utils/utils.dart';
-import 'package:lecsens/utils/utils.dart';
+import 'package:lecsens/viewModel/auth_view_model.dart';
 
 // Define a custom Form widget.
 class EmailVerificationForm extends StatefulWidget {
-  const EmailVerificationForm({super.key});
+  final AuthViewModel authviewmodel;
+  const EmailVerificationForm({super.key, required this.authviewmodel});
 
   @override
   EmailVerificationFormState createState() {
@@ -17,11 +18,12 @@ class EmailVerificationForm extends StatefulWidget {
 }
 
 class EmailVerificationFormState extends State<EmailVerificationForm> {
-  final _formKey = GlobalKey<FormState>();
-  bool _obscureText = true;
   bool _isEmailVerificationCooldown = false;
   int _sendVerificationEmailCooldown = 60;
   Timer? _timer;
+
+  TextEditingController _emailController = TextEditingController();
+  final FocusNode _emailFocus = FocusNode();
 
   void _startCooldownTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -42,20 +44,21 @@ class EmailVerificationFormState extends State<EmailVerificationForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Column(
         children: <Widget>[
           Padding(padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
             child: TextFormField(
+              controller: _emailController,
+              focusNode: _emailFocus,
+              keyboardType: TextInputType.emailAddress,
+              onFieldSubmitted: (value) {
+                Utils.changeNodeFocus(context,
+                  current: _emailFocus);
+              },
               decoration: const InputDecoration(
+                label: Text('Email'),
                 hintText: 'Email',
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Harap isi dengan email yang valid';
-                }
-                return null;
-              },
             ),
           ),
           const SizedBox(height: 10),
@@ -65,8 +68,10 @@ class EmailVerificationFormState extends State<EmailVerificationForm> {
               null
               :
               _startCooldownTimer();
-              if (_formKey.currentState!.validate()) {
-                Utils.showSnackBar(context, 'Email verifikasi berhasil dikirim');
+              if (_emailController.text.isEmpty) {
+                Utils.showSnackBar(context, 'Harap isi email');
+              } else {
+                widget.authviewmodel.sendVerificationEmail(_emailController.text, context);
               }
             },
             style: ElevatedButton.styleFrom(

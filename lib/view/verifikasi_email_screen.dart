@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../res/widgets/email_verification_form.dart';
 import 'package:lecsens/res/widgets/copyright_footer.dart';
+import 'package:lecsens/viewModel/auth_view_model.dart';
+import 'package:provider/provider.dart';
 
 class VerifikasiEmailScreen extends StatefulWidget {
   const VerifikasiEmailScreen({super.key});
@@ -12,6 +14,8 @@ class VerifikasiEmailScreen extends StatefulWidget {
 class _VerifikasiEmailScreenState extends State<VerifikasiEmailScreen> {
   @override
   Widget build(BuildContext context) {
+  final authviewmodel = Provider.of<AuthViewModel>(context);
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -29,7 +33,7 @@ class _VerifikasiEmailScreenState extends State<VerifikasiEmailScreen> {
               ),
             ),
             SizedBox(height: 30),
-            EmailVerificationForm(),
+            EmailVerificationForm(authviewmodel : authviewmodel),
           ],
         ),
       ),
