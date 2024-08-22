@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 const String tableAccess = 'access';
 
 class AccessFields {
