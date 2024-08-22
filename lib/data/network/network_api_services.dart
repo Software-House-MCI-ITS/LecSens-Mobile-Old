@@ -6,11 +6,16 @@ import 'package:lecsens/data/network/base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
   @override
-  Future getGetApiResponse(String url) async {
+  Future getGetApiResponse(String url, String token) async {
     dynamic responsejson;
     try {
       final response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+          await http.get(
+            Uri.parse(url),
+            headers: {
+              'Authorization': token
+            }
+          ).timeout(const Duration(seconds: 10));
       responsejson = responseJson(response);
     } on SocketException {
       throw InternetException("NO Internet is available right now");
