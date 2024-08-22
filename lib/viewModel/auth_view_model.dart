@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/models/user_model.dart';
+import 'package:lecsens/data/db/lecsens_database.dart';
 
 class AuthViewModel with ChangeNotifier {
   final _auth = AuthRepository();
@@ -43,6 +44,7 @@ class AuthViewModel with ChangeNotifier {
 
         User user = User.fromJson(value);
         userPreference.saveCurrentUser(user);
+        LecSensDatabase.instance.insertUser(user);
 
         Utils.showSnackBar(context, "Login success");
         setLoginLoading(false);

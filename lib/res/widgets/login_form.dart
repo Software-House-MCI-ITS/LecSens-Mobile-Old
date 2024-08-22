@@ -95,13 +95,13 @@ class LoginFormState extends State<LoginForm> {
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(
-                  text: 'Belum punya akun? ',
+                const TextSpan(
+                  text: 'Belum memiliki akun? ',
                   style: TextStyle(color: Colors.grey),
                 ),
                 TextSpan(
                   text: 'Signup',
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       Navigator.pushNamed(context, RouteNames.signup); 
@@ -114,13 +114,13 @@ class LoginFormState extends State<LoginForm> {
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(
+                const TextSpan(
                   text: 'Mengalami masalah saat login ? ',
                   style: TextStyle(color: Colors.grey),
                 ),
                 TextSpan(
                   text: 'Hubungi kami',
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
                       Utils.launchUrl(context, 'https://www.google.com');

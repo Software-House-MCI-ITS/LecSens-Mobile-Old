@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 const String tableAccess = 'access';
 
 class AccessFields {
@@ -11,28 +13,28 @@ class AccessFields {
 
 class Access {
   String? id;
-  int? userID;
-  int? alatID;
+  final int userID;
+  final int alatID;
 
   Access({
     this.id,
-    this.userID,
-    this.alatID,
+    required this.userID,
+    required this.alatID,
   });
 
   factory Access.fromJson(Map<String, dynamic> json) {
     return Access(
-      id: json['id'],
-      userID: json['userID'],
-      alatID: json['alatID'],
+      id: json[AccessFields.id] as String,
+      userID: json[AccessFields.userID] as int,
+      alatID: json[AccessFields.alatID] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'userID': userID,
-      'alatID': alatID,
+      AccessFields.id: id,
+      AccessFields.userID: userID,
+      AccessFields.alatID: alatID,
     };
   }
 }

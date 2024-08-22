@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 const String tableLecsensData = 'lecsens_data';
 
 class LecsensDataFields {
@@ -14,87 +12,87 @@ class LecsensDataFields {
   static const String ipc = 'IPC';
   static const String ipa = 'IPA';
   static const String epa = 'EPA';
-  static const String predictionA = 'Prediction A';
-  static const String predictionB = 'Prediction B';
-  static const String predictionC = 'Prediction C';
-  static const String predictionD = 'Prediction D';
-  static const String predictionE = 'Prediction E';
-  static const String predictionF = 'Prediction F';
-  static const String predictionG = 'Prediction G';
+  static const String predictionA = 'Prediction_A';
+  static const String predictionB = 'Prediction_B';
+  static const String predictionC = 'Prediction_C';
+  static const String predictionD = 'Prediction_D';
+  static const String predictionE = 'Prediction_E';
+  static const String predictionF = 'Prediction_F';
+  static const String predictionG = 'Prediction_G';
 }
 
 class LecsensData {
   String? id;
-  int? alatID;
-  int? userID;
-  String? lokasi;
-  double? epc;
-  double? ipc;
-  double? ipa;
-  double? epa;
-  double? predictionA;
-  double? predictionB;
-  double? predictionC;
-  double? predictionD;
-  double? predictionE;
-  double? predictionF;
-  double? predictionG;
+  final String alatID;
+  final String userID;
+  final String lokasi;
+  final double epc;
+  final double ipc;
+  final double ipa;
+  final double epa;
+  final double predictionA;
+  final double predictionB;
+  final double predictionC;
+  final double predictionD;
+  final double predictionE;
+  final double predictionF;
+  final double predictionG;
 
   LecsensData({
     this.id,
-    this.alatID,
-    this.userID,
-    this.lokasi,
-    this.epc,
-    this.ipc,
-    this.ipa,
-    this.epa,
-    this.predictionA,
-    this.predictionB,
-    this.predictionC,
-    this.predictionD,
-    this.predictionE,
-    this.predictionF,
-    this.predictionG,
+    required this.alatID,
+    required this.userID,
+    required this.lokasi,
+    required this.epc,
+    required this.ipc,
+    required this.ipa,
+    required this.epa,
+    required this.predictionA,
+    required this.predictionB,
+    required this.predictionC,
+    required this.predictionD,
+    required this.predictionE,
+    required this.predictionF,
+    required this.predictionG,
   });
 
   factory LecsensData.fromJson(Map<String, dynamic> json) {
     return LecsensData(
-      id: json['id'],
-      alatID: json['alatID'],
-      userID: json['userID'],
-      lokasi: json['lokasi'],
-      epc: json['epc'],
-      ipc: json['ipc'],
-      ipa: json['ipa'],
-      epa: json['epa'],
-      predictionA: json['predictionA'],
-      predictionB: json['predictionB'],
-      predictionC: json['predictionC'],
-      predictionD: json['predictionD'],
-      predictionE: json['predictionE'],
-      predictionF: json['predictionF'],
-      predictionG: json['predictionG'],
+      id: json[LecsensDataFields.alatID] as String,
+      alatID: json[LecsensDataFields.alatID] as String,
+      userID: json[LecsensDataFields.userID] as String,
+      lokasi: json[LecsensDataFields.lokasi] as String,
+      epc: json[LecsensDataFields.epc] as double,
+      ipc: json[LecsensDataFields.ipc] as double,
+      ipa: json[LecsensDataFields.ipa] as double,
+      epa: json[LecsensDataFields.epa] as double,
+      predictionA: json[LecsensDataFields.predictionA] as double,
+      predictionB: json[LecsensDataFields.predictionB] as double,
+      predictionC: json[LecsensDataFields.predictionC] as double,
+      predictionD: json[LecsensDataFields.predictionD] as double,
+      predictionE: json[LecsensDataFields.predictionE] as double,
+      predictionF: json[LecsensDataFields.predictionF] as double,
+      predictionG: json[LecsensDataFields.predictionG] as double,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'alatID': alatID,
-      'userID': userID,
-      'lokasi': lokasi,
-      'epc': epc,
-      'ipc': ipc,
-      'ipa': ipa,
-      'epa': epa,
-      'predictionA': predictionA,
-      'predictionB': predictionB,
-      'predictionC': predictionC,
-      'predictionD': predictionD,
-      'predictionE': predictionE,
-      'predictionF': predictionF,
-      'predictionG': predictionG,
+      LecsensDataFields.id: id,
+      LecsensDataFields.alatID: alatID,
+      LecsensDataFields.userID: userID,
+      LecsensDataFields.lokasi: lokasi,
+      LecsensDataFields.epc: epc,
+      LecsensDataFields.ipc: ipc,
+      LecsensDataFields.ipa: ipa,
+      LecsensDataFields.epa: epa,
+      LecsensDataFields.predictionA: predictionA,
+      LecsensDataFields.predictionB: predictionB,
+      LecsensDataFields.predictionC: predictionC,
+      LecsensDataFields.predictionD: predictionD,
+      LecsensDataFields.predictionE: predictionE,
+      LecsensDataFields.predictionF: predictionF,
+      LecsensDataFields.predictionG: predictionG,
     };
   }
 }

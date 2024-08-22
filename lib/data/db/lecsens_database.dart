@@ -5,8 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:lecsens/models/access_model.dart';
 import 'package:lecsens/models/alat_model.dart';
 import 'package:lecsens/models/lecsens_data_model.dart';
-import 'package:lecsens/models/role_model.dart';
-import 'package:lecsens/models/user_data_model.dart';
 import 'package:lecsens/models/user_model.dart';
 
 class LecSensDatabase {
@@ -17,7 +15,7 @@ class LecSensDatabase {
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('lecsens_trial.db');
+    _database = await _initDB('lecsens_trial4.db');
     return _database!;
   }
 
@@ -25,11 +23,10 @@ class LecSensDatabase {
     try {
       final dbPath = await getDatabasesPath();
       final path = join(dbPath, filePath);
-      print('Database path: $path');
 
       return await openDatabase(path, version: 1, onCreate: _createDB);
     } catch (ex) {
-      throw Exception("Error in initiating database");
+      throw Exception("Error in initiating database" + ex.toString());
     }
   }
 
@@ -43,19 +40,12 @@ class LecSensDatabase {
     await db.execute('''
       CREATE TABLE $tableUsers (
         ${UserFields.id} $idType,
+        ${UserFields.token} $textType,
         ${UserFields.userName} $textType,
         ${UserFields.email} $textType,
         ${UserFields.fullName} $textType,
         ${UserFields.isVerified} $textType,
-        ${UserFields.lastLoginTimestamp} $textType,
         ${UserFields.role} $textType
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE $tableRoles (
-        ${RoleFields.id} $idType,
-        ${RoleFields.name} $textType
       )
     ''');
 
@@ -70,12 +60,12 @@ class LecSensDatabase {
     await db.execute('''
       CREATE TABLE $tableAlat (
         ${AlatFields.id} $idType,
-        ${AlatFields.macAddress} $textType,
-        ${AlatFields.mode} $textType,
-        ${AlatFields.namaAlat} $textType,
         ${AlatFields.owner} $textType,
+        ${AlatFields.namaAlat} $textType,
+        ${AlatFields.status} $textType,
         ${AlatFields.pwm} $textType,
-        ${AlatFields.status} $textType
+        ${AlatFields.mode} $textType,
+        ${AlatFields.macAddress} $textType
       )
     ''');
 
@@ -98,7 +88,25 @@ class LecSensDatabase {
         ${LecsensDataFields.predictionG} $realType
       )
     ''');
+  }
 
-    print('Database created');
+  Future<User> insertUser(User user) async {
+    try {
+      final db = await instance.database;
+      await db.insert(tableUsers, user.toJson());
+
+      return user;
+    } catch (ex) {
+      throw Exception("Error in creating user" + ex.toString());
+    }
+  }
+
+  Future<void> removeUser(User user) async {
+    try {
+      final db = await instance.database;
+      db.delete(tableUsers, where: '${UserFields.id} = ?', whereArgs: [user.id]);
+    } catch (ex) {
+      throw Exception("Error in deleting user");
+    }
   }
 }

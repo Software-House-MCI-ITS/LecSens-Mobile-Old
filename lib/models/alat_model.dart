@@ -15,44 +15,44 @@ class AlatFields {
 
 class Alat {
   String? id;
-  String? owner;
-  String? namaAlat;
-  int? status;
-  String? pwm;
-  int? mode;
-  String? macAddress;
+  final String owner;
+  final String namaAlat;
+  final int status;
+  final String pwm;
+  final int mode;
+  final String macAddress;
 
   Alat({
     this.id,
-    this.owner,
-    this.namaAlat,
-    this.status,
-    this.pwm,
-    this.mode,
-    this.macAddress,
+    required this.owner,
+    required this.namaAlat,
+    required this.status,
+    required this.pwm,
+    required this.mode,
+    required this.macAddress,
   });
 
   factory Alat.fromJson(Map<String, dynamic> json) {
     return Alat(
-      id: json['id'],
-      owner: json['owner'],
-      namaAlat: json['namaAlat'],
-      status: json['status'],
-      pwm: json['pwm'],
-      mode: json['mode'],
-      macAddress: json['macAddress'],
+      id: json[AlatFields.id] as String,
+      owner: json[AlatFields.owner] as String,
+      namaAlat: json[AlatFields.namaAlat] as String,
+      status: json[AlatFields.status] as int,
+      pwm: json[AlatFields.pwm] as String,
+      mode: json[AlatFields.mode] as int,
+      macAddress: json[AlatFields.macAddress] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'owner': owner,
-      'namaAlat': namaAlat,
-      'status': status,
-      'pwm': pwm,
-      'mode': mode,
-      'macAddress': macAddress,
+      AlatFields.id: id,
+      AlatFields.owner: owner,
+      AlatFields.namaAlat: namaAlat,
+      AlatFields.status: status,
+      AlatFields.pwm: pwm,
+      AlatFields.mode: mode,
+      AlatFields.macAddress: macAddress,
     };
   }
 }
