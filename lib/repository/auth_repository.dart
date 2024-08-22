@@ -4,7 +4,8 @@ import 'package:lecsens/res/widgets/app_urls.dart';
 
 class AuthRepository {
   final NetworkApiServices _network = NetworkApiServices();
-  Future<dynamic> apiLogin(dynamic data) async {
+
+  Future<dynamic> login(dynamic data) async {
     dynamic requestjson = jsonEncode(data);
     try {
       final response = await _network.getPostApiResponse(AppUrls.loginEndPoint, requestjson);

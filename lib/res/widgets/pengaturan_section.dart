@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:lecsens/utils/utils.dart';
+import 'package:lecsens/viewModel/home_view_model.dart';
 
-class PengaturanSection extends StatelessWidget {
-  const PengaturanSection({super.key});
+class PengaturanSection extends StatefulWidget {
+  final HomeViewModel homeviewmodel;
+  const PengaturanSection({super.key, required this.homeviewmodel});
 
+  @override
+  PengaturanSectionState createState() {
+    return PengaturanSectionState();
+  }
+}
+
+class PengaturanSectionState extends State<PengaturanSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,7 +35,7 @@ class PengaturanSection extends StatelessWidget {
               title: Text('Logout'),
               leading: Icon(Icons.logout),
               onTap: () {
-                // Handle onTap
+                widget.homeviewmodel.logout(context);
               },
             ),
           ),

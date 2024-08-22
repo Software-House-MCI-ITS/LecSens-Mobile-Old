@@ -34,7 +34,7 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> login(dynamic data, BuildContext context) async {
     setLoginLoading(true);
-    _auth.apiLogin(data).then((value) {
+    _auth.login(data).then((value) {
       if (value['message'] == 'pengguna belum diverifikasi') {
         setLoginLoading(false);
         Navigator.pushNamed(context, RouteNames.emailVerification);

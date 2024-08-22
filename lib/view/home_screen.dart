@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
+import 'package:provider/provider.dart';
 
 import '../res/widgets/header.dart';
 import '../res/widgets/info_section.dart';
 import '../res/widgets/riwayat_section.dart';
 import '../res/widgets/pengaturan_section.dart';
+import 'package:lecsens/viewModel/home_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,9 +17,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 1;
+  HomeViewModel hm = HomeViewModel();
+
+  @override
+  void initState() {
+    hm.fetchLecsensListApi(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final homeviewmodel = Provider.of<HomeViewModel>(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -52,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: <Widget>[
         RiwayatSection(),
         const InfoSection(),
-        const PengaturanSection(),
+        PengaturanSection(homeviewmodel: homeviewmodel),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
