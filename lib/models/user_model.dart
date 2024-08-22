@@ -2,7 +2,7 @@ const String tableUsers = 'users';
 
 class UserFields {
   static final List<String> values = [
-    id, token, userName, email, fullName, roleID, isVerified, lastLoginTimestamp
+    id, token, userName, email, fullName, role, isVerified, lastLoginTimestamp
   ];
 
   static const String id = 'id';
@@ -10,7 +10,7 @@ class UserFields {
   static const String userName = 'userName';
   static const String email = 'email';
   static const String fullName = 'fullName';
-  static const String roleID = 'roleID';
+  static const String role = 'role';
   static const String isVerified = 'isVerified';
   static const String lastLoginTimestamp = 'lastLoginTimestamp';
 }
@@ -21,7 +21,7 @@ class User {
   String? userName;
   String? email;
   String? fullName;
-  int? roleID;
+  String? role;
   bool? isVerified;
   String? lastLoginTimestamp;
 
@@ -31,7 +31,7 @@ class User {
     this.userName,
     this.email,
     this.fullName,
-    this.roleID,
+    this.role,
     this.isVerified,
     this.lastLoginTimestamp
   });
@@ -39,11 +39,11 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      token: json['token'],
-      userName: json['userName'],
+      token: json['access_token'],
+      userName: json['username'],
       email: json['email'],
-      fullName: json['fullName'],
-      roleID: json['roleID'],
+      fullName: json['name'],
+      role: json['role'],
       isVerified: json['isVerified'],
       lastLoginTimestamp: json['lastLoginTimestamp']
     );
@@ -56,7 +56,7 @@ class User {
       'userName': userName,
       'email': email,
       'fullName': fullName,
-      'roleID': roleID,
+      'role': role,
       'isVerified': isVerified,
       'lastLoginTimestamp': lastLoginTimestamp
     };

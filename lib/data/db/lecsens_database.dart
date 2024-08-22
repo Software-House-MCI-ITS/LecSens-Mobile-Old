@@ -9,13 +9,9 @@ import 'package:lecsens/models/role_model.dart';
 import 'package:lecsens/models/user_data_model.dart';
 import 'package:lecsens/models/user_model.dart';
 
-import 'dart:developer' as developer;
-
 class LecSensDatabase {
   static final LecSensDatabase instance = LecSensDatabase._init();
-
   static Database? _database;
-
   LecSensDatabase._init();
 
   Future<Database> get database async {
@@ -29,7 +25,7 @@ class LecSensDatabase {
     try {
       final dbPath = await getDatabasesPath();
       final path = join(dbPath, filePath);
-      developer.log('Database path: $path');
+      print('Database path: $path');
 
       return await openDatabase(path, version: 1, onCreate: _createDB);
     } catch (ex) {
@@ -38,7 +34,7 @@ class LecSensDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const idType = 'VARCHAR(36) PRIMARY KEY';
     const textType = 'TEXT NOT NULL';
     const integerType = 'INTEGER NOT NULL';
     const booleanType = 'BOOLEAN NOT NULL';
@@ -52,7 +48,7 @@ class LecSensDatabase {
         ${UserFields.fullName} $textType,
         ${UserFields.isVerified} $textType,
         ${UserFields.lastLoginTimestamp} $textType,
-        ${UserFields.roleID} $textType
+        ${UserFields.role} $textType
       )
     ''');
 
@@ -103,67 +99,6 @@ class LecSensDatabase {
       )
     ''');
 
-  //   await db.insert(tableRoles, Role(id: 1, name: 'admin').toJson());
-  //   await db.insert(tableRoles, Role(id: 2, name: 'user').toJson());
-
-  //   await db.insert(tableUsers, User(
-  //     id: 1,
-  //     userName: 'admin',
-  //     email: 'adminadmin123@gmail.com',
-  //     fullName: 'Admin Admin',
-  //     isVerified: true,
-  //     lastLoginTimestamp: '2021-10-10 10:10:10',
-  //     roleID: 1,
-  //   ).toJson());
-
-  //   await db.insert(tableUsers, User(
-  //     id: 2,
-  //     userName: 'user',
-  //     email: 'useruser123@gmail.com',
-  //     fullName: 'User User',
-  //     isVerified: true,
-  //     lastLoginTimestamp: '2021-10-10 10:10:10',
-  //     roleID: 2,
-  //   ).toJson());
-
-  //   await db.insert(tableAlat, Alat(
-  //     id: 1,
-  //     macAddress: '00:00:00:00:00:00',
-  //     mode: 1,
-  //     namaAlat: 'alat',
-  //     owner: 'owner',
-  //     pwm: 'pwm',
-  //     status: 1,
-  //   ).toJson());
-
-  //   await db.insert(tableAccess, Access(
-  //     id: 1,
-  //     userID: 1,
-  //     alatID: 1,
-  //   ).toJson());
-
-  //   await db.insert(tableUserData, UserData(
-  //     id: 1,
-  //     gender: true,
-  //     jabatan: 'jabatan',
-  //   ).toJson());
-
-  //   await db.insert(tableLecsensData, LecsensData(
-  //     id: 1,
-  //     alatID: 1,
-  //     userID: 1,
-  //     lokasi: 'lokasi',
-  //     epc: 1.0,
-  //     ipc: 1.0,
-  //     ipa: 1.0,
-  //     epa: 1.0,
-  //     predictionA: 1.0,
-  //     predictionB: 1.0,
-  //     predictionC: 1.0,
-  //     predictionD: 1.0,
-  //     predictionE: 1.0,
-  //     predictionF: 1.0,
-  //     predictionG: 1.0,
-  //   ).toJson());
+    print('Database created');
   }
 }
