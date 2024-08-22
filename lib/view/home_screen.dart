@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Center(
-          child: Header(),
+          child: Header(homeviewmodel: homeviewmodel),
         ),
       ),
       bottomNavigationBar: NavigationBar(
