@@ -1,4 +1,3 @@
-// header_widget.dart
 import 'package:flutter/material.dart';
 import 'package:lecsens/viewModel/home_view_model.dart';
 import 'package:provider/provider.dart';

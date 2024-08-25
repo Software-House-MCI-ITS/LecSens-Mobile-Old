@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    hm.fetchLecsensListApi(context);
+    hm.setVoltametryDataListApi(context);
     super.initState();
   }
 
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: <Widget>[
         RiwayatSection(),
-        const InfoSection(),
+        InfoSection(homeviewmodel: hm),
         PengaturanSection(homeviewmodel: homeviewmodel),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
