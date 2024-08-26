@@ -20,7 +20,9 @@ class HomeViewModel with ChangeNotifier {
   final String _macAddress = '00:00:00:00:00:00';
   String _title = '';
   VoltametryData? _newestVoltametryData;
+  VoltametryData? _newestVoltametryDataByDate;
   List<ChartData>? _chartData;
+  List<VoltametryData>? _voltametryDataByDateList;
 
   ApiResponse<LecsensList> lecsensDataList = ApiResponse.loading();
   ApiResponse<VoltametryDataList> voltametryDataList = ApiResponse.loading();
@@ -29,6 +31,9 @@ class HomeViewModel with ChangeNotifier {
   get fetchingData => _fetchingData;
   get title => _title;
   get chartData => _chartData;
+  get latestVoltametryData => _newestVoltametryData;
+  get latestVoltametryDataByDate => _newestVoltametryDataByDate;
+  get voltametryDataByDateList => _voltametryDataByDateList;
 
   setLecsensList(ApiResponse<LecsensList> response) {
     lecsensDataList = response;
@@ -39,8 +44,7 @@ class HomeViewModel with ChangeNotifier {
     voltametryDataList = response;
 
     if (response.status == Status.completed && response.data != null && response.data!.voltametryDataList.isNotEmpty) {
-      int _lastlistIndex = response.data!.voltametryDataList.length - 1;
-      _newestVoltametryData = response.data!.voltametryDataList[_lastlistIndex];
+      _newestVoltametryData = response.data!.getLatestData();
     } else {
       _newestVoltametryData = null;
     }
@@ -51,6 +55,17 @@ class HomeViewModel with ChangeNotifier {
       _chartData = null;
     }
 
+    notifyListeners();
+  }
+
+  void setVoltametryDataByDateList(String date) {
+    String dateOnly = Utils().getFormattedDate(date, 10);
+    _voltametryDataByDateList = voltametryDataList.data!.getVoltametryDataByDate(dateOnly);
+    if (_voltametryDataByDateList != null && _voltametryDataByDateList!.isNotEmpty) {
+      _newestVoltametryDataByDate = _voltametryDataByDateList!.last;
+    } else {
+      _newestVoltametryDataByDate = null;
+    }
     notifyListeners();
   }
 
@@ -102,29 +117,28 @@ class HomeViewModel with ChangeNotifier {
   }
 
   void setVoltametryDataListApi(BuildContext context) async {
-  setVoltametryDataList(ApiResponse.loading());
-  final userViewModel = UserViewModel();
-  final user = await userViewModel.getCurrentUser();
+    setVoltametryDataList(ApiResponse.loading());
+    final userViewModel = UserViewModel();
+    final user = await userViewModel.getCurrentUser();
 
-  if (user != null) {
-    setFetchingData(true);
-    _homeRepository.fetchVoltametryDataByAlat(user.token, _macAddress).then((value) {
-      setFetchingData(false);
-      try {
-        final voltametryList = VoltametryDataList.fromJson(value);
-        setVoltametryDataList(ApiResponse.completed(voltametryList));
-      } catch (e) {
-        Utils.showSnackBar(context, 'Failed to parse voltametry data.');
-        setVoltametryDataList(ApiResponse.error('Failed to parse voltametry data.'));
-      }
-    }).onError((error, stackTrace) {
-      setFetchingData(false);
-      Utils.showSnackBar(context, error.toString());
-      setVoltametryDataList(ApiResponse.error(error.toString()));
-    });
+    if (user != null) {
+      setFetchingData(true);
+      _homeRepository.fetchVoltametryDataByAlat(user.token, _macAddress).then((value) {
+        setFetchingData(false);
+        try {
+          final voltametryList = VoltametryDataList.fromJson(value);
+          setVoltametryDataList(ApiResponse.completed(voltametryList));
+        } catch (e) {
+          Utils.showSnackBar(context, 'Failed to parse voltametry data.');
+          setVoltametryDataList(ApiResponse.error('Failed to parse voltametry data.'));
+        }
+      }).onError((error, stackTrace) {
+        setFetchingData(false);
+        Utils.showSnackBar(context, error.toString());
+        setVoltametryDataList(ApiResponse.error(error.toString()));
+      });
+    }
   }
-}
-
 
   void setTitle() async {
     final userViewModel = UserViewModel();

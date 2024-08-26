@@ -58,13 +58,31 @@ class Utils {
   static List<ChartData> getConvertedVoltametryData(VoltametryData data) {
     List<double> dataX = data.data_x;
     List<double> dataY = data.data_y;
-
+    List<double> peakX = data.peak_x;
     List<ChartData> chartData = [];
 
     for (int i = 0; i < dataX.length; i++) {
-      chartData.add(ChartData(dataX[i], dataY[i]));
+      if ((dataX[i] > peakX[0] + 10 || dataX[i] > peakX[0] - 10) || (dataX[i] > peakX[1] + 10 || dataX[i] > peakX[1] - 10)) {
+        chartData.add(ChartData(dataX[i], dataY[i], Colors.red));
+      } else {
+        chartData.add(ChartData(dataX[i], dataY[i], Colors.blue));
+      }
     }
 
     return chartData;
+  }
+
+  static List<ChartData> getConvertedPpmData(List<VoltametryData> data) {
+    List<ChartData> chartData = [];
+
+    for (int i = 0; i < data.length; i++) {
+      chartData.add(ChartData(i + 1, data[i].ppm.toDouble(), Colors.blue));
+    }
+
+    return chartData;
+  }
+
+  String getFormattedDate(String date, int length) {
+    return date.substring(0, length);
   }
 }

@@ -10,6 +10,9 @@ class VoltametryDataFields {
   static const String data_y = 'data_y';
   static const String peak_x = 'peak_x';
   static const String peak_y = 'peak_y';
+  static const String ppm = 'ppm';
+  static const String label = 'label';
+  static const String createdAt = 'created_at';
 }
 
 class VoltametryData {
@@ -20,6 +23,9 @@ class VoltametryData {
   final List<double> data_y;
   final List<double> peak_x;
   final List<double> peak_y;
+  final int ppm;
+  final String label;
+  final String createdAt;
 
   VoltametryData({
     this.id,
@@ -29,6 +35,9 @@ class VoltametryData {
     required this.data_y,
     required this.peak_x,
     required this.peak_y,
+    required this.ppm,
+    required this.label,
+    required this.createdAt
   });
 
   factory VoltametryData.fromJson(Map<String, dynamic> json) {
@@ -40,6 +49,9 @@ class VoltametryData {
       data_y: (json[VoltametryDataFields.data_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
       peak_x: (json[VoltametryDataFields.peak_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
       peak_y: (json[VoltametryDataFields.peak_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+      ppm: json[VoltametryDataFields.ppm] as int,
+      label: json[VoltametryDataFields.label] as String,
+      createdAt: json[VoltametryDataFields.createdAt] as String
     );
   }
 
@@ -52,6 +64,9 @@ class VoltametryData {
       VoltametryDataFields.data_y: data_y,
       VoltametryDataFields.peak_x: peak_x,
       VoltametryDataFields.peak_y: peak_y,
+      VoltametryDataFields.ppm: ppm,
+      VoltametryDataFields.label: label,
+      VoltametryDataFields.createdAt: createdAt
     };
   }
 }
@@ -71,5 +86,33 @@ class VoltametryDataList {
 
   List<Map<String, dynamic>> toJson() {
     return voltametryDataList.map((e) => e.toJson()).toList();
+  }
+
+  List<VoltametryData> getTimbalData() {
+    return voltametryDataList.where((element) => element.label.toLowerCase() == 'timbal').toList();
+  }
+
+  List<VoltametryData> getKadmiumData() {
+    return voltametryDataList.where((element) => element.label.toLowerCase() == 'kadmium').toList();
+  }
+
+  List<VoltametryData> getMikroplastikData() {
+    return voltametryDataList.where((element) => element.label.toLowerCase() == 'mikroplastik' || element.label.toLowerCase() == 'microplastic').toList();
+  }
+
+  List<VoltametryData> getMerkuriData() {
+    return voltametryDataList.where((element) => element.label.toLowerCase() == 'merkuri').toList();
+  }
+
+  List<VoltametryData> getArsenData() {
+    return voltametryDataList.where((element) => element.label.toLowerCase() == 'arsen').toList();
+  }
+
+  VoltametryData getLatestData() {
+    return voltametryDataList.last;
+  }
+
+  List<VoltametryData> getVoltametryDataByDate(String date) {
+    return voltametryDataList.where((element) => element.createdAt.startsWith(date)).toList();
   }
 }

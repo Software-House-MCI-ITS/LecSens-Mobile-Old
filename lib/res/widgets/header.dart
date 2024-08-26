@@ -14,18 +14,10 @@ class Header extends StatefulWidget {
 
 class HeaderState extends State<Header> {
   @override
-  void initState() {
-    super.initState();
-    widget.homeviewmodel.setTitle();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 25, 16, 0),
-      child: ChangeNotifierProvider<HomeViewModel>(
-        create: (context) => widget.homeviewmodel,
-        child: Consumer<HomeViewModel>(
+      child: Consumer<HomeViewModel>(
           builder: (context, value, child) {
             return Row(
               children: [
@@ -52,7 +44,6 @@ class HeaderState extends State<Header> {
             );
           }
         ),
-      ),
-    );
+      );
   }
 }
