@@ -6,4 +6,5 @@ class RouteNames {
   static const String ambilData = "ambil_data_screen";
   static const String detail = "detail_screen";
   static const String emailVerification = "email_verification_screen";
+  static const String riwayat = "riwayat_screen";
 }

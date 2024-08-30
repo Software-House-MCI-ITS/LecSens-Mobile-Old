@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lecsens/viewModel/riwayat_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/utils/routes/routes.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => UserViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel())
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => RiwayatViewModel())
       ],
       child: WillPopScope(
         onWillPop: () async {

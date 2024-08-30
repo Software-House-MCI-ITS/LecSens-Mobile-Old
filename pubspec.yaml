@@ -23,6 +23,8 @@ dependencies:
   path: ^1.9.0
   http: ^0.13.5
   shared_preferences: ^2.0.18
+  pull_to_refresh_flutter3: ^2.0.2
+  flutter_osm_plugin: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -39,4 +41,9 @@ flutter:
     - lib/res/images/lecsens_logo.png
     - lib/res/images/ambil_data.png
     - lib/res/images/alat.png
+    - lib/res/images/arsen.png
+    - lib/res/images/kadmium.png
+    - lib/res/images/merkuri.png
+    - lib/res/images/microplastics.png
+    - lib/res/images/timbal.png
     

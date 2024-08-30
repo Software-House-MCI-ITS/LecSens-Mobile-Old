@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
+import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/res/chart_data.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Utils {
   static void showSnackBar(BuildContext context, String message) {
@@ -46,5 +49,40 @@ class Utils {
       {FocusNode? current, FocusNode? next}) {
     current!.unfocus();
     FocusScope.of(context).requestFocus(next);
+  }
+
+  static String getFormattedMacAddress(String macAddress) {
+    return macAddress.replaceAll(':', '%3A');
+  }
+
+  static List<ChartData> getConvertedVoltametryData(VoltametryData data) {
+    List<double> dataX = data.data_x;
+    List<double> dataY = data.data_y;
+    List<double> peakX = data.peak_x;
+    List<ChartData> chartData = [];
+
+    for (int i = 0; i < dataX.length; i++) {
+      if ((dataX[i] < peakX[0] + 5 && dataX[i] > peakX[0] - 5) || (dataX[i] > peakX[1] + 5 && dataX[i] > peakX[1] - 5)) {
+        chartData.add(ChartData(dataX[i], dataY[i], Colors.red));
+      } else {
+        chartData.add(ChartData(dataX[i], dataY[i], Colors.blue));
+      }
+    }
+
+    return chartData;
+  }
+
+  static List<ChartData> getConvertedPpmData(List<VoltametryData> data) {
+    List<ChartData> chartData = [];
+
+    for (int i = 0; i < data.length; i++) {
+      chartData.add(ChartData(i + 1, data[i].ppm.toDouble(), Colors.blue));
+    }
+
+    return chartData;
+  }
+
+  String getFormattedDate(String date, int length) {
+    return date.substring(0, length);
   }
 }

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../res/widgets/header.dart';
 import '../res/widgets/info_section.dart';
-import '../res/widgets/riwayat_section.dart';
+import '../res/widgets/overview_section.dart';
 import '../res/widgets/pengaturan_section.dart';
 import 'package:lecsens/viewModel/home_view_model.dart';
 
@@ -21,15 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    hm.fetchLecsensListApi(context);
     super.initState();
+    hm.setTitle();
+    hm.setVoltametryDataListApi(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final homeviewmodel = Provider.of<HomeViewModel>(context);
 
-    return Scaffold(
+    return ChangeNotifierProvider<HomeViewModel>(
+      create: (context) => hm,
+      child: Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Center(
@@ -46,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.history),
-            label: 'Riwayat',
+            icon: Icon(Icons.dashboard),
+            label: 'Overview',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -61,17 +64,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: <Widget>[
-        RiwayatSection(),
-        const InfoSection(),
-        PengaturanSection(homeviewmodel: homeviewmodel),
-      ][currentPageIndex],
+            OverviewSection(homeViewModel: homeviewmodel),
+            InfoSection(homeviewmodel: hm),
+            PengaturanSection(homeviewmodel: homeviewmodel),
+          ][currentPageIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, RouteNames.ambilData);
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.control_point_duplicate_outlined),
         backgroundColor: Colors.blue,
       ),
+    ),
     );
   }
 }

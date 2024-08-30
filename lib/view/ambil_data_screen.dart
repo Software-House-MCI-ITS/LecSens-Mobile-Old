@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lecsens/res/widgets/copyright_footer.dart';
 import 'package:lecsens/utils/utils.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 enum AmbilDataStates {
   mencariAlat,
@@ -20,6 +21,13 @@ class _AmbilDataScreenState extends State<AmbilDataScreen> {
   String _selectedDevice = '';
   AmbilDataStates _state = AmbilDataStates.mencariAlat;
   final _formKey = GlobalKey<FormState>();
+
+  final mapController = MapController.withUserPosition(
+    trackUserLocation: UserTrackingOption(
+      enableTracking: true,
+      unFollowUser: false,
+    )
+  );
 
   void _selectDevice(String device) {
     setState(() {
@@ -110,26 +118,48 @@ class _AmbilDataScreenState extends State<AmbilDataScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Image(
-                      image: AssetImage('lib/res/images/alat.png'),
-                      height: 100,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Mengambil data dari $_selectedDevice ...',
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Utils.showSnackBar(context, 'Data berhasil diambil');
-                        setState(() {
-                          _state = AmbilDataStates.validasiData;
-                        });
-                      },
-                      child: const Text('Ambil Data'),
+                    Container(
+                      height: 650,
+                      width: double.infinity,
+                      child: OSMFlutter(
+                        controller: mapController,
+                        osmOption: OSMOption(
+                          userTrackingOption: UserTrackingOption(
+                            enableTracking: true,
+                            unFollowUser: false,
+                          ),
+                          zoomOption: ZoomOption(
+                            initZoom: 8,
+                            minZoomLevel: 3,
+                            maxZoomLevel: 19,
+                            stepZoom: 1.0,
+                          ),
+                          userLocationMarker: UserLocationMaker(
+                            personMarker: MarkerIcon(
+                              icon: Icon(
+                                Icons.location_history_rounded,
+                                color: Colors.red,
+                                size: 48,
+                              ),
+                            ),
+                            directionArrowMarker: MarkerIcon(
+                              icon: Icon(
+                                Icons.double_arrow,
+                                size: 48,
+                              ),
+                            ),
+                          ),
+                          roadConfiguration: RoadOption(
+                            roadColor: Colors.yellowAccent,
+                          ),
+                          isPicker: true,
+                          showDefaultInfoWindow: true,
+                          enableRotationByGesture: false
+                        ),
+                      ),
                     ),
                   ],
-                )
+                ),
               );
             case AmbilDataStates.validasiData:
               return Center(

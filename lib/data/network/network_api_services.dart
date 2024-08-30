@@ -13,7 +13,7 @@ class NetworkApiServices extends BaseApiServices {
           await http.get(
             Uri.parse(url),
             headers: {
-              'Authorization': token
+              'Authorization': 'Bearer $token',
             }
           ).timeout(const Duration(seconds: 10));
       responsejson = responseJson(response);

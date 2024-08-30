@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lecsens/models/voltametry_data_model.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/view/home_screen.dart';
 import 'package:lecsens/view/login_screen.dart';
@@ -7,6 +8,7 @@ import 'package:lecsens/view/signup_screen.dart';
 import 'package:lecsens/view/ambil_data_screen.dart';
 import 'package:lecsens/view/detail_screen.dart';
 import 'package:lecsens/view/verifikasi_email_screen.dart';
+import 'package:lecsens/view/riwayat_screen.dart';
 
 class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -27,12 +29,16 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const AmbilDataScreen());
       case (RouteNames.detail):
+        final args = settings.arguments as VoltametryData;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const DetailScreen());
+            builder: (BuildContext context) => DetailScreen(voltametryData: args));
       case (RouteNames.emailVerification):
         return MaterialPageRoute(
             builder: (BuildContext context) => const VerifikasiEmailScreen());
-      
+      case (RouteNames.riwayat):
+        final args = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RiwayatScreen(text: args));
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
