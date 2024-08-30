@@ -62,7 +62,7 @@ class Utils {
     List<ChartData> chartData = [];
 
     for (int i = 0; i < dataX.length; i++) {
-      if ((dataX[i] > peakX[0] + 10 || dataX[i] > peakX[0] - 10) || (dataX[i] > peakX[1] + 10 || dataX[i] > peakX[1] - 10)) {
+      if ((dataX[i] < peakX[0] + 5 && dataX[i] > peakX[0] - 5) || (dataX[i] > peakX[1] + 5 && dataX[i] > peakX[1] - 5)) {
         chartData.add(ChartData(dataX[i], dataY[i], Colors.red));
       } else {
         chartData.add(ChartData(dataX[i], dataY[i], Colors.blue));

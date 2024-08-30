@@ -67,14 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
             OverviewSection(homeViewModel: homeviewmodel),
             InfoSection(homeviewmodel: hm),
             PengaturanSection(homeviewmodel: homeviewmodel),
-          ][currentPageIndex]
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pushNamed(context, RouteNames.ambilData);
-      //   },
-      //   child: const Icon(Icons.add),
-      //   backgroundColor: Colors.blue,
-      // ),
+          ][currentPageIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, RouteNames.ambilData);
+        },
+        child: const Icon(Icons.control_point_duplicate_outlined),
+        backgroundColor: Colors.blue,
+      ),
     ),
     );
   }

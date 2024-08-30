@@ -109,7 +109,7 @@ class VoltametryDataList {
   }
 
   VoltametryData getLatestData() {
-    return voltametryDataList.last;
+    return voltametryDataList.first;
   }
 
   List<VoltametryData> getVoltametryDataByDate(String date) {

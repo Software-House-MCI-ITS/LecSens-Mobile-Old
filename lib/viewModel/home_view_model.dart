@@ -62,7 +62,7 @@ class HomeViewModel with ChangeNotifier {
     String dateOnly = Utils().getFormattedDate(date, 10);
     _voltametryDataByDateList = voltametryDataList.data!.getVoltametryDataByDate(dateOnly);
     if (_voltametryDataByDateList != null && _voltametryDataByDateList!.isNotEmpty) {
-      _newestVoltametryDataByDate = _voltametryDataByDateList!.last;
+      _newestVoltametryDataByDate = _voltametryDataByDateList!.first;
     } else {
       _newestVoltametryDataByDate = null;
     }
@@ -128,6 +128,7 @@ class HomeViewModel with ChangeNotifier {
         try {
           final voltametryList = VoltametryDataList.fromJson(value);
           setVoltametryDataList(ApiResponse.completed(voltametryList));
+          Utils.showSnackBar(context, 'Data fetched successfully');
         } catch (e) {
           Utils.showSnackBar(context, 'Failed to parse voltametry data.');
           setVoltametryDataList(ApiResponse.error('Failed to parse voltametry data.'));

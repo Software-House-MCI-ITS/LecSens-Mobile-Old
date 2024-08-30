@@ -93,21 +93,21 @@ class _OverviewSectionState extends State<OverviewSection> {
                                 ],
                               ),
                             ),
-                            Expanded(
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Text(
-                                  value.latestVoltametryDataByDate != null ? 
-                                  (value.latestVoltametryDataByDate!.ppm < 90 ? 'Normal' : 'Bahaya')
-                                  : 
-                                  '-',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Align(
+                            //     alignment: Alignment.topRight,
+                            //     child: Text(
+                            //       value.latestVoltametryDataByDate != null ? 
+                            //       (value.latestVoltametryDataByDate!.ppm < 90 ? 'Normal' : 'Bahaya')
+                            //       : 
+                            //       '-',
+                            //       style: const TextStyle(
+                            //         color: Colors.black,
+                            //         fontSize: 20.0,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
