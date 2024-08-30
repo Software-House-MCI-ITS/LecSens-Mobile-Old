@@ -50,7 +50,7 @@ class _InfoSectionState extends State<InfoSection> {
               enablePullUp: false,
               onRefresh: _onRefresh,
               onLoading: _onLoading,
-              header: WaterDropHeader(),
+              header: const WaterDropHeader(),
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[

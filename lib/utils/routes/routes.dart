@@ -5,7 +5,7 @@ import 'package:lecsens/view/home_screen.dart';
 import 'package:lecsens/view/login_screen.dart';
 import 'package:lecsens/view/splash_screen.dart';
 import 'package:lecsens/view/signup_screen.dart';
-import 'package:lecsens/view/ambil_data_screen.dart';
+import 'package:lecsens/view/share_location_screen.dart';
 import 'package:lecsens/view/detail_screen.dart';
 import 'package:lecsens/view/verifikasi_email_screen.dart';
 import 'package:lecsens/view/riwayat_screen.dart';
@@ -27,7 +27,7 @@ class Routes {
             builder: (BuildContext context) => const SplashScreen());
       case (RouteNames.ambilData):
         return MaterialPageRoute(
-            builder: (BuildContext context) => const AmbilDataScreen());
+            builder: (BuildContext context) => const ShareLocationScreen());
       case (RouteNames.detail):
         final args = settings.arguments as VoltametryData;
         return MaterialPageRoute(
