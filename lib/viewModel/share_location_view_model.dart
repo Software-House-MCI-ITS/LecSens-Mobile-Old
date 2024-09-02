@@ -3,26 +3,28 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 
 class ShareLocationViewModel with ChangeNotifier {
   List<BluetoothDevice> _btDevices = [];
-  String _locationData = '-7.289527, 112.796771';
+  GeoPoint? _currentLocation;
 
   bool _isScanningDevices = false;
 
   get isScanningDevices => _isScanningDevices;
   get btDevices => _btDevices;
+  get currentLocation => _currentLocation;
 
   void setScanningDevices(bool value) {
     _isScanningDevices = value;
     notifyListeners();
   }
 
-  void setLocationData(String value) {
-    _locationData = value;
+  void updateCurrentLocation(GeoPoint location) {
+    _currentLocation = location;
     notifyListeners();
   }
 
@@ -71,7 +73,7 @@ class ShareLocationViewModel with ChangeNotifier {
         if (service.uuid.toString() == '0000ffe0-0000-1000-8000-00805f9b34fb') {
           service.characteristics.forEach((characteristic) async {
             if (characteristic.uuid.toString() == '0000ffe1-0000-1000-8000-00805f9b34fb') {
-              await characteristic.write(utf8.encode(_locationData));
+              await characteristic.write(utf8.encode('${_currentLocation!.latitude}, ${_currentLocation!.longitude}'));
               Utils.showSnackBar(context, 'Location data sent successfully');
             }
           });

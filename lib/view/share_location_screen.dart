@@ -22,14 +22,14 @@ class ShareLocationScreen extends StatefulWidget {
 class _ShareLocationScreenState extends State<ShareLocationScreen> {
   ShareLocationViewModel shareLocationViewModel = ShareLocationViewModel();
   String _selectedDevice = '';
-  ShareLocationStates _state = ShareLocationStates.mencariAlat;
+  ShareLocationStates _state = ShareLocationStates.mengambilDataLokasi;
   final _formKey = GlobalKey<FormState>();
 
-  final mapController = MapController.withUserPosition(
+  late MapController mapController = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
-      enableTracking: true,
-      unFollowUser: false,
-    )
+      enableTracking: false,
+      unFollowUser: true,
+    ),
   );
 
   void _selectDevice(String device) {
@@ -39,10 +39,55 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
     });
   }
 
+  void _getInitialLocation() async {
+    GeoPoint? currentLocation = await mapController.myLocation();
+    if (currentLocation != null) {
+      shareLocationViewModel.updateCurrentLocation(currentLocation);
+      await mapController.addMarker(
+        currentLocation,
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.location_pin,
+            color: Colors.red,
+            size: 48,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _pickLocation(GeoPoint pickedLocation) async {
+    try {
+      print("Picking location: ${pickedLocation.latitude}, ${pickedLocation.longitude}");
+      await mapController.removeMarker(shareLocationViewModel.currentLocation!);
+      await mapController.addMarker(
+        pickedLocation,
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.location_pin,
+            color: Colors.red,
+            size: 48,
+          ),
+        ),
+      );
+      shareLocationViewModel.updateCurrentLocation(pickedLocation);
+      mapController.moveTo(pickedLocation);
+      Utils.showSnackBar(context, 'Picked ${shareLocationViewModel.currentLocation.longitude}');
+    } catch (e) {
+      print("Error in picking location: $e");
+      Utils.showSnackBar(context, 'Failed to pick location');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    shareLocationViewModel.checkBluetooth(context);
+    mapController.listenerMapSingleTapping.addListener(() {
+      if (mapController.listenerMapSingleTapping.value != null) {
+        _pickLocation(mapController.listenerMapSingleTapping.value!);
+      }
+    });
+    // shareLocationViewModel.checkBluetooth(context);
   }
 
   @override
@@ -120,8 +165,8 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                     enableTracking: true,
                                     unFollowUser: false,
                                   ),
-                                  zoomOption: ZoomOption(
-                                    initZoom: 8,
+                                  zoomOption: const ZoomOption(
+                                    initZoom: 20,
                                     minZoomLevel: 3,
                                     maxZoomLevel: 19,
                                     stepZoom: 1.0,
@@ -129,7 +174,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                   userLocationMarker: UserLocationMaker(
                                     personMarker: MarkerIcon(
                                       icon: Icon(
-                                        Icons.location_history_rounded,
+                                        Icons.location_pin,
                                         color: Colors.red,
                                         size: 48,
                                       ),
@@ -148,6 +193,21 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                   showDefaultInfoWindow: true,
                                   enableRotationByGesture: false,
                                 ),
+                                 onMapIsReady: (isReady) async {
+                                  if (isReady) {
+                                    _getInitialLocation();
+                                    await mapController.addMarker(
+                                      shareLocationViewModel.currentLocation!,
+                                      markerIcon: MarkerIcon(
+                                        icon: Icon(
+                                          Icons.location_pin,
+                                          color: Colors.red,
+                                          size: 48,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ],
@@ -240,9 +300,6 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
               );
             },
           ),
-          
-          
-          
           bottomNavigationBar: const CopyrightFooter(),
         ),
       )
