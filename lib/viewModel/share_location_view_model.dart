@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,12 +13,14 @@ import 'package:uuid/uuid.dart';
 class ShareLocationViewModel with ChangeNotifier {
   List<BluetoothDevice> _btDevices = [];
   GeoPoint? _currentLocation;
+  BluetoothDevice? _selectedDevice;
 
   bool _isScanningDevices = false;
 
   get isScanningDevices => _isScanningDevices;
   get btDevices => _btDevices;
   get currentLocation => _currentLocation;
+  get selectedDevice => _selectedDevice;
 
   void setScanningDevices(bool value) {
     _isScanningDevices = value;
@@ -25,6 +29,18 @@ class ShareLocationViewModel with ChangeNotifier {
 
   void updateCurrentLocation(GeoPoint location) {
     _currentLocation = location;
+    notifyListeners();
+  }
+
+  void setSelectedDevice(BluetoothDevice device, BuildContext context) {
+    _selectedDevice = device;
+    
+    try {
+      _selectedDevice?.connect();
+    } catch (e) {
+      Utils.showSnackBar(context, 'Failed to connect to device');
+    }
+
     notifyListeners();
   }
 
@@ -40,49 +56,56 @@ class ShareLocationViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> scanDevices() async {
+  void scanDevices() async {
     setScanningDevices(true);
     await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    
+
     FlutterBluePlus.scanResults.listen((results) {
+      List<BluetoothDevice> newDevices = [];
       for (ScanResult r in results) {
-        if (!_btDevices.contains(r.device)) {
-          _btDevices.add(r.device);
-          notifyListeners();
+        if (!_btDevices.contains(r.device) && r.device.name != null && r.device.name.isNotEmpty) {
+          newDevices.add(r.device);
         }
       }
+
+      if (newDevices.isNotEmpty) {
+        _btDevices = [..._btDevices, ...newDevices];
+        notifyListeners();
+      }
     });
-    
+
     await FlutterBluePlus.isScanning.where((val) => val == false).first;
     setScanningDevices(false);
   }
 
-  Future<void> connectDevice(BluetoothDevice device) async {
-    await device.connect();
-  }
-
-  Future<void> disconnectDevice(BluetoothDevice device) async {
-    await device.disconnect();
-  }
-
-  Future<void> sendLocationData(BluetoothDevice device, BuildContext context) async {
-    List<BluetoothService> services = await device.discoverServices();
+  Future<void> sendLocationData(BuildContext context, String wifiName, String wifiPass) async {
+    Utils.showSnackBar(context, 'Mengirim data lokasi');
     
     try {
+      await _selectedDevice!.connect();
+      List<BluetoothService> services = await _selectedDevice!.discoverServices();
+    
       services.forEach((service) {
-        if (service.uuid.toString() == '0000ffe0-0000-1000-8000-00805f9b34fb') {
-          service.characteristics.forEach((characteristic) async {
-            if (characteristic.uuid.toString() == '0000ffe1-0000-1000-8000-00805f9b34fb') {
-              await characteristic.write(utf8.encode('${_currentLocation!.latitude}, ${_currentLocation!.longitude}'));
-              Utils.showSnackBar(context, 'Location data sent successfully');
-            }
-          });
-        }
-      }
-    );
-    } catch (e) {
-      Utils.showSnackBar(context, 'Failed to send location data');
-    }
-    disconnectDevice(device);
+        print('uuid: ${service.uuid}');
+        
+        service.characteristics.forEach((characteristic) {
+          if (characteristic.properties.write) {
+            String data = '${wifiName};${wifiPass};token;${_currentLocation!.latitude};${_currentLocation!.longitude}';
+            print('data: $data');
+            List<int> list = utf8.encode(data);
+            Uint8List bytes = Uint8List.fromList(list);
+
+            characteristic.write(bytes);
+          }
+        });
+      });
+
+      Utils.showSnackBar(context, 'Location data sent successfully');
+      Navigator.pushNamed(context, RouteNames.home);
+  } catch (e) {
+    Utils.showSnackBar(context, 'Failed to send location data');
+  }
+
+    await selectedDevice.disconnect();
   }
 }

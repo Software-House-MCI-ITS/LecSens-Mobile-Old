@@ -21,9 +21,14 @@ class ShareLocationScreen extends StatefulWidget {
 
 class _ShareLocationScreenState extends State<ShareLocationScreen> {
   ShareLocationViewModel shareLocationViewModel = ShareLocationViewModel();
-  String _selectedDevice = '';
-  ShareLocationStates _state = ShareLocationStates.mengambilDataLokasi;
+  ShareLocationStates _state = ShareLocationStates.mencariAlat;
   final _formKey = GlobalKey<FormState>();
+  final ValueNotifier<bool> _obsecureNotifier = ValueNotifier<bool>(true);
+  final TextEditingController _wifiNameController = TextEditingController();
+  final TextEditingController _wifiPasswordController = TextEditingController();
+
+  final FocusNode _wifiNameFocus = FocusNode();
+  final FocusNode _wifiPasswordFocus = FocusNode();
 
   late MapController mapController = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
@@ -32,10 +37,9 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
     ),
   );
 
-  void _selectDevice(String device) {
+  void setPageState(ShareLocationStates state) {
     setState(() {
-      _selectedDevice = device;
-      _state = ShareLocationStates.mengambilDataLokasi;
+      _state = state;
     });
   }
 
@@ -72,7 +76,6 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
       );
       shareLocationViewModel.updateCurrentLocation(pickedLocation);
       mapController.moveTo(pickedLocation);
-      Utils.showSnackBar(context, 'Picked ${shareLocationViewModel.currentLocation.longitude}');
     } catch (e) {
       print("Error in picking location: $e");
       Utils.showSnackBar(context, 'Failed to pick location');
@@ -87,7 +90,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
         _pickLocation(mapController.listenerMapSingleTapping.value!);
       }
     });
-    // shareLocationViewModel.checkBluetooth(context);
+    shareLocationViewModel.checkBluetooth(context);
   }
 
   @override
@@ -111,6 +114,14 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                           Column(
                             children: [
                               SizedBox(height: 20),
+                              Text(
+                                'Pilih Alat Lecsens',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: () {
                                   value.scanDevices();
@@ -127,26 +138,29 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                               ),
                               SizedBox(height: 20),
                               value.isScanningDevices ? const CircularProgressIndicator() : const SizedBox(),
-                              ListView.builder(
+                              Padding(padding: EdgeInsets.only(left: 40, right: 40),
+                                child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: value.btDevices.length,
+                                itemCount: shareLocationViewModel.btDevices.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  Card(
+                                  return Card(
                                     color: const Color(0xffD9E8FF),
                                     child: ListTile(
                                       title: Text(
-                                        value.btDevices[index].name,
+                                        'Found: ${shareLocationViewModel.btDevices[index].name}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       trailing: const Icon(Icons.arrow_circle_right_outlined),
                                       onTap: () {
-                                        _selectDevice(value.btDevices[index].id);
+                                        value.setSelectedDevice(value.btDevices[index], context);
+                                        setPageState(ShareLocationStates.mengambilDataLokasi);
                                       },
                                     ),
                                   );
                                 },
+                              ),
                               )
                             ])
                       );
@@ -156,7 +170,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              height: 650,
+                              height: 500,
                               width: double.infinity,
                               child: OSMFlutter(
                                 controller: mapController,
@@ -210,6 +224,41 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                 },
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Konfirmasi koordinat pengambilan data',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Padding(padding: EdgeInsets.only(left: 40, right: 40),
+                              child: Text(
+                                'Koordinat: ${shareLocationViewModel.currentLocation?.latitude}, ${shareLocationViewModel.currentLocation?.longitude}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setPageState(ShareLocationStates.kirimDataLokasi);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff0078C1),
+                                  minimumSize: const Size(150, 50),
+                                  disabledBackgroundColor: Colors.grey,
+                                ),
+                                child: const Text(
+                                  'Konfirmasi',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       );
@@ -217,39 +266,15 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                       return Center(
                         child: Column(
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.lightBlue,
-                              margin: const EdgeInsets.only(top: 20),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    '130',
-                                    style: TextStyle(
-                                      fontSize: 60,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Ppm',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 50),
                             Padding(
                               padding: EdgeInsets.only(left: 40, right: 40),
                               child: Text(
-                                'Mohon validasi data berikut sebelum mengunggah data',
+                                'Konfirgurasi Wifi',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -262,21 +287,61 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                     padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
                                     child: TextFormField(
                                       decoration: const InputDecoration(
-                                        hintText: 'Lokasi',
+                                        hintText: 'Nama Wifi',
                                       ),
+                                      controller: _wifiNameController,
+                                      focusNode: _wifiNameFocus,
+                                      onFieldSubmitted: (value) {
+                                        Utils.changeNodeFocus(context,
+                                          current: _wifiNameFocus, next: _wifiPasswordFocus);
+                                      },
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'Harap isi dengan email yang valid';
+                                          return 'Harap isi dengan nama wifi yang valid';
                                         }
                                         return null;
                                       },
                                     ),
                                   ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+                                    child: ValueListenableBuilder(
+                                      valueListenable: _obsecureNotifier,
+                                      builder: ((context, value, child) {
+                                        return TextFormField(
+                                          decoration: InputDecoration(
+                                            hintText: 'Password Wifi',
+                                            suffixIcon: IconButton(
+                                              icon: Icon(
+                                                _obsecureNotifier.value ? Icons.visibility : Icons.visibility_off,
+                                                color: Colors.grey,
+                                              ),
+                                              onPressed: () {
+                                                _obsecureNotifier.value = !_obsecureNotifier.value;
+                                              },
+                                            ),
+                                          ),
+                                          controller: _wifiPasswordController,
+                                          focusNode: _wifiPasswordFocus,
+                                          obscureText: _obsecureNotifier.value,
+                                          obscuringCharacter: "*",
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Harap isi dengan password wifi yang valid';
+                                            }
+                                            return null;
+                                          },
+                                        );
+                                      }))
+                                  ),
                                   const SizedBox(height: 30),
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        Utils.uploadData(context, '130 ppm');
+                                      if (_wifiNameController.text.isEmpty || _wifiPasswordController.text.isEmpty) {
+                                        Utils.showSnackBar(context, 'Harap isi semua field');
+                                        return;
+                                      } else {
+                                        shareLocationViewModel.sendLocationData(context, _wifiNameController.text, _wifiPasswordController.text);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
