@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/models/lecsens_data_model.dart';
 import 'package:lecsens/res/widgets/chart_card.dart';
 import 'package:lecsens/res/widgets/copyright_footer.dart';
 import 'package:lecsens/res/widgets/voltametry_card.dart';
 import 'package:lecsens/utils/utils.dart';
 
 class DetailScreen extends StatelessWidget {
-  VoltametryData voltametryData;
+  LecsensData voltametryData;
   DetailScreen({super.key, required this.voltametryData});
 
   @override

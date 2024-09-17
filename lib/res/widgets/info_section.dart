@@ -26,7 +26,7 @@ class _InfoSectionState extends State<InfoSection> {
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
-    widget.homeviewmodel.setVoltametryDataListApi(context);
+    widget.homeviewmodel.setLecsensDataListQuery(context);
     _refreshController.refreshCompleted();
   }
 
@@ -102,8 +102,8 @@ class _InfoSectionState extends State<InfoSection> {
                                 //     alignment: Alignment.topRight,
                                 //     child: 
                                 //     Text(
-                                //       value.latestVoltametryData != null
-                                //           ? (value.latestVoltametryData!.ppm < 90
+                                //       value.latestLecsensData != null
+                                //           ? (value.latestLecsensData!.ppm < 90
                                 //               ? 'Normal'
                                 //               : 'Bahaya')
                                 //           : '-',
@@ -135,8 +135,8 @@ class _InfoSectionState extends State<InfoSection> {
                             child: Column(
                               children: [
                                 Text(
-                                  value.latestVoltametryData != null
-                                      ? value.latestVoltametryData!.ppm.toString()
+                                  value.latestLecsensData != null
+                                      ? value.latestLecsensData!.ppm.toString()
                                       : '-',
                                   style: const TextStyle(
                                     color: Color(0xff0078C1),

@@ -18,7 +18,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
   @override
   void initState() {
     super.initState();
-    riwayatViewModel.setVoltametryDataListApi(context, widget.text);
+    riwayatViewModel.setLecsensDataListQuery(context, widget.text);
   }
 
   @override

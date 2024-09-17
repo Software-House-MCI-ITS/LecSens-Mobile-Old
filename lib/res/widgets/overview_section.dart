@@ -42,7 +42,7 @@ class _OverviewSectionState extends State<OverviewSection> {
                       selectedDate: _selectedDate,
                       onDateChange: (date) {
                         _onDateChange(date);
-                        value.setVoltametryDataByDateList(date.toString());
+                        value.setLecsensDataByDateListQuery(context, date.toString());
                       },
                     ),
                   ),
@@ -60,7 +60,7 @@ class _OverviewSectionState extends State<OverviewSection> {
                     locale: 'en',
                     onDateChange: (date) {
                       _onDateChange(date);
-                      value.setVoltametryDataByDateList(date.toString());
+                      value.setLecsensDataByDateListQuery(context, date.toString());
                     },
                   ),
                 ),
@@ -97,8 +97,8 @@ class _OverviewSectionState extends State<OverviewSection> {
                             //   child: Align(
                             //     alignment: Alignment.topRight,
                             //     child: Text(
-                            //       value.latestVoltametryDataByDate != null ? 
-                            //       (value.latestVoltametryDataByDate!.ppm < 90 ? 'Normal' : 'Bahaya')
+                            //       value.latestLecsensDataByDate != null ? 
+                            //       (value.latestLecsensDataByDate!.ppm < 90 ? 'Normal' : 'Bahaya')
                             //       : 
                             //       '-',
                             //       style: const TextStyle(
@@ -129,7 +129,7 @@ class _OverviewSectionState extends State<OverviewSection> {
                         child: Column(
                           children: [
                             Text(
-                              value.latestVoltametryDataByDate != null ? value.latestVoltametryDataByDate!.ppm.toString() : '-',
+                              value.latestLecsensDataByDate != null ? value.latestLecsensDataByDate!.ppm.toString() : '-',
                               style: const TextStyle(
                                 color: Color(0xff0078C1),
                                 fontSize: 70.0,
@@ -162,7 +162,7 @@ class _OverviewSectionState extends State<OverviewSection> {
                     ],
                   ),
                 ),
-                ChartCard(title: 'Harian', voltametryDataList: value.voltametryDataByDateList),
+                ChartCard(title: 'Harian', lecsensDataList: value.lecsensDataByDateList),
                 // ChartCard(title: 'Mingguan', homeviewmodel: widget.homeviewmodel)
               ],
             ),

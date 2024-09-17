@@ -11,6 +11,8 @@ class AlatFields {
   static const String pwm = 'PWM';
   static const String mode = 'mode';
   static const String macAddress = 'macAddress';
+  static const String createdAt = 'created_at';
+  static const String updatedAt = 'updated_at';
 }
 
 class Alat {
@@ -21,6 +23,8 @@ class Alat {
   final String pwm;
   final int mode;
   final String macAddress;
+  final String createdAt;
+  final String updatedAt;
 
   Alat({
     this.id,
@@ -30,6 +34,8 @@ class Alat {
     required this.pwm,
     required this.mode,
     required this.macAddress,
+    required this.createdAt,
+    required this.updatedAt
   });
 
   factory Alat.fromJson(Map<String, dynamic> json) {
@@ -41,6 +47,8 @@ class Alat {
       pwm: json[AlatFields.pwm] as String,
       mode: json[AlatFields.mode] as int,
       macAddress: json[AlatFields.macAddress] as String,
+      createdAt: json[AlatFields.createdAt] as String,
+      updatedAt: json[AlatFields.updatedAt] as String
     );
   }
 
@@ -53,6 +61,8 @@ class Alat {
       AlatFields.pwm: pwm,
       AlatFields.mode: mode,
       AlatFields.macAddress: macAddress,
+      AlatFields.createdAt: createdAt,
+      AlatFields.updatedAt: updatedAt
     };
   }
 }

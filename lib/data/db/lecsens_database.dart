@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:lecsens/models/access_model.dart';
 import 'package:lecsens/models/alat_model.dart';
 import 'package:lecsens/models/lecsens_data_model.dart';
 import 'package:lecsens/models/user_model.dart';
@@ -15,7 +14,7 @@ class LecSensDatabase {
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('lecsens_trial4.db');
+    _database = await _initDB('lecsens_trial5.db');
     return _database!;
   }
 
@@ -36,6 +35,7 @@ class LecSensDatabase {
     const integerType = 'INTEGER NOT NULL';
     const booleanType = 'BOOLEAN NOT NULL';
     const realType = 'REAL NOT NULL';
+    const timestampType = 'TIMESTAMP NOT NULL';
 
     await db.execute('''
       CREATE TABLE $tableUsers (
@@ -50,14 +50,6 @@ class LecSensDatabase {
     ''');
 
     await db.execute('''
-      CREATE TABLE $tableAccess (
-        ${AccessFields.id} $idType,
-        ${AccessFields.userID} $textType,
-        ${AccessFields.alatID} $textType
-      )
-    ''');
-
-    await db.execute('''
       CREATE TABLE $tableAlat (
         ${AlatFields.id} $idType,
         ${AlatFields.owner} $textType,
@@ -65,7 +57,9 @@ class LecSensDatabase {
         ${AlatFields.status} $textType,
         ${AlatFields.pwm} $textType,
         ${AlatFields.mode} $textType,
-        ${AlatFields.macAddress} $textType
+        ${AlatFields.macAddress} $textType,
+        ${AlatFields.createdAt} $timestampType,
+        ${AlatFields.updatedAt} $timestampType
       )
     ''');
 
@@ -73,19 +67,15 @@ class LecSensDatabase {
       CREATE TABLE $tableLecsensData (
         ${LecsensDataFields.id} $idType,
         ${LecsensDataFields.alatID} $textType,
-        ${LecsensDataFields.userID} $textType,
-        ${LecsensDataFields.lokasi} $textType,
-        ${LecsensDataFields.epc} $realType,
-        ${LecsensDataFields.ipc} $realType,
-        ${LecsensDataFields.ipa} $realType,
-        ${LecsensDataFields.epa} $realType,
-        ${LecsensDataFields.predictionA} $realType,
-        ${LecsensDataFields.predictionB} $realType,
-        ${LecsensDataFields.predictionC} $realType,
-        ${LecsensDataFields.predictionD} $realType,
-        ${LecsensDataFields.predictionE} $realType,
-        ${LecsensDataFields.predictionF} $realType,
-        ${LecsensDataFields.predictionG} $realType
+        ${LecsensDataFields.alamat} $textType,
+        ${LecsensDataFields.data_x} $textType,
+        ${LecsensDataFields.data_y} $textType,
+        ${LecsensDataFields.peak_x} $realType,
+        ${LecsensDataFields.peak_y} $realType,
+        ${LecsensDataFields.ppm} $realType,
+        ${LecsensDataFields.label} $textType,
+        ${LecsensDataFields.createdAt} $timestampType,
+        ${LecsensDataFields.updatedAt} $timestampType
       )
     ''');
   }
@@ -94,6 +84,9 @@ class LecSensDatabase {
     try {
       final db = await instance.database;
       await db.insert(tableUsers, user.toJson());
+      print('Inserted user');
+      print('Inserted user');
+      print('Inserted user');
 
       return user;
     } catch (ex) {
@@ -105,8 +98,151 @@ class LecSensDatabase {
     try {
       final db = await instance.database;
       db.delete(tableUsers, where: '${UserFields.id} = ?', whereArgs: [user.id]);
+      print('Removed user');
+      print('Removed user');
+      print('Removed user');
     } catch (ex) {
       throw Exception("Error in deleting user");
+    }
+  }
+
+  Future<void> bulkInsertAlat(List<Alat> alatList) async {
+    try {
+      final db = await instance.database;
+      final batch = db.batch();
+
+      for (var alat in alatList) {
+        batch.insert(tableAlat, alat.toJson());
+      }
+
+      await batch.commit(noResult: true);
+      print('Inserted alat');
+      print('Inserted alat');
+      print('Inserted alat');
+    } catch (ex) {
+      throw Exception("Error in creating alat" + ex.toString());
+    }
+  }
+
+  Future<void> bulkInsertLecsensData(List<LecsensData> lecsensDataList) async {
+    try {
+      final db = await instance.database;
+      final batch = db.batch();
+
+      for (var lecsensData in lecsensDataList) {
+        batch.insert(tableLecsensData, lecsensData.toJson());
+      }
+
+      await batch.commit(noResult: true);
+      print('Inserted lecsens data');
+      print('Inserted lecsens data');
+      print('Inserted lecsens data');
+    } catch (ex) {
+      throw Exception("Error in creating lecsens data" + ex.toString());
+    }
+  }
+
+  Future<void> bulkUpdateAlat(List<Alat> alatList) async {
+    try {
+      final db = await instance.database;
+      final batch = db.batch();
+
+      for (var alat in alatList) {
+        batch.update(tableAlat, alat.toJson(), where: '${AlatFields.id} = ?', whereArgs: [alat.id]);
+      }
+
+      await batch.commit(noResult: true);
+      print('Updated alat');
+      print('Updated alat');
+      print('Updated alat');
+    } catch (ex) {
+      throw Exception("Error in updating alat" + ex.toString());
+    }
+  }
+
+  Future<void> bulkUpdateLecsensData(List<LecsensData> lecsensDataList) async {
+    try {
+      final db = await instance.database;
+      final batch = db.batch();
+
+      for (var lecsensData in lecsensDataList) {
+        batch.update(tableLecsensData, lecsensData.toJson(), where: '${LecsensDataFields.id} = ?', whereArgs: [lecsensData.id]);
+      }
+
+      await batch.commit(noResult: true);
+      print('Updated lecsens data');
+      print('Updated lecsens data');
+      print('Updated lecsens data');
+    } catch (ex) {
+      throw Exception("Error in updating lecsens data" + ex.toString());
+    }
+  }
+
+  Future<void> deleteAllAlat() async {
+    try {
+      final db = await instance.database;
+      db.delete(tableAlat);
+      print('Deleted all alat');
+      print('Deleted all alat');
+      print('Deleted all alat');
+    } catch (ex) {
+      throw Exception("Error in deleting all alat");
+    }
+  }
+
+  Future<void> deleteAllLecsensData() async {
+    try {
+      final db = await instance.database;
+      db.delete(tableLecsensData);
+      print('Deleted all lecsens data');
+      print('Deleted all lecsens data');
+      print('Deleted all lecsens data');
+    } catch (ex) {
+      throw Exception("Error in deleting all lecsens data");
+    }
+  }
+
+  Future<AlatList> getAllAlat(int page) async {
+    try {
+      final db = await instance.database;
+      final result = await db.query(tableAlat, limit: 10, offset: page * 10);
+
+      return AlatList(alatList: result.map((json) => Alat.fromJson(json)).toList());
+    } catch (ex) {
+      throw Exception("Error in getting all alat" + ex.toString());
+    }
+  }
+
+  Future<LecsensDataList> getAllLecsensDataByLabelPagination(int page, String label) async {
+    try {
+      final db = await instance.database;
+      final result = await db.query(tableLecsensData, where: '${LecsensDataFields.label} = ?', whereArgs: [label], limit: 10, offset: page * 10);
+
+      return LecsensDataList(lecsensDataList: result.map((json) => LecsensData.fromJson(json)).toList());
+    } catch (ex) {
+      throw Exception("Error in getting all lecsens data by label" + ex.toString());
+    }
+  }
+
+  Future<LecsensDataList> getAllLecsensData() async {
+    try {
+      final db = await instance.database;
+      final result = await db.query(tableLecsensData);
+
+      return LecsensDataList(lecsensDataList: result.map((json) => LecsensData.fromJson(json)).toList());
+    } catch (ex) {
+      throw Exception("Error in getting all lecsens data" + ex.toString());
+    }
+  }
+
+  Future<LecsensDataList> getAllLecsensDataByDate(String date) async {
+    try {
+      final db = await instance.database;
+      final result = await db.query(tableLecsensData, where: '${LecsensDataFields.createdAt} LIKE ?', whereArgs: ['%$date%'], limit: 5);
+
+      return LecsensDataList(lecsensDataList: result.map((json) => LecsensData.fromJson(json)).toList());
+    } catch (ex) {
+      throw Exception("Error in getting all lecsens data by date" + ex.toString());
     }
   }
 }

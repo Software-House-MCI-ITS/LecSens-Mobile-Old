@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/models/lecsens_data_model.dart';
 import 'package:lecsens/res/chart_data.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/viewModel/home_view_model.dart';
@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class VoltametryCard extends StatefulWidget {
-  VoltametryData voltametryData;
+  LecsensData voltametryData;
   VoltametryCard({super.key, required this.voltametryData});
 
   @override

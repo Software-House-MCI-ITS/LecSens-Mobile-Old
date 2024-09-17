@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     hm.setTitle();
-    hm.setVoltametryDataListApi(context);
+    hm.setLecsensDataListQuery(context);
   }
 
   @override

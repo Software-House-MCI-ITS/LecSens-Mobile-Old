@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/models/lecsens_data_model.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/view/home_screen.dart';
 import 'package:lecsens/view/login_screen.dart';
@@ -29,7 +29,7 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const ShareLocationScreen());
       case (RouteNames.detail):
-        final args = settings.arguments as VoltametryData;
+        final args = settings.arguments as LecsensData;
         return MaterialPageRoute(
             builder: (BuildContext context) => DetailScreen(voltametryData: args));
       case (RouteNames.emailVerification):

@@ -4,9 +4,8 @@ import 'package:lecsens/viewModel/user_view_model.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/repository/home_repository.dart';
 import 'package:lecsens/utils/utils.dart';
-import 'package:lecsens/data/response/api_response.dart';
+import 'package:lecsens/data/response/query_response.dart';
 import 'package:lecsens/models/lecsens_data_model.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
 import 'package:lecsens/data/db/lecsens_database.dart';
 import 'package:lecsens/models/user_model.dart';
 import 'package:lecsens/data/response/status.dart';
@@ -19,38 +18,32 @@ class HomeViewModel with ChangeNotifier {
   
   final String _macAddress = '00:00:00:00:00:00';
   String _title = '';
-  VoltametryData? _newestVoltametryData;
-  VoltametryData? _newestVoltametryDataByDate;
+  LecsensData? _newestLecsensData;
+  LecsensData? _newestLecsensDataByDate;
   List<ChartData>? _chartData;
-  List<VoltametryData>? _voltametryDataByDateList;
+  List<LecsensData>? _lecsensDataByDateList;
 
-  ApiResponse<LecsensList> lecsensDataList = ApiResponse.loading();
-  ApiResponse<VoltametryDataList> voltametryDataList = ApiResponse.loading();
+  QueryResponse<LecsensDataList> lecsensDataList = QueryResponse.loading();
 
   get logoutLoading => _logoutLoading;
   get fetchingData => _fetchingData;
   get title => _title;
   get chartData => _chartData;
-  get latestVoltametryData => _newestVoltametryData;
-  get latestVoltametryDataByDate => _newestVoltametryDataByDate;
-  get voltametryDataByDateList => _voltametryDataByDateList;
+  get latestLecsensData => _newestLecsensData;
+  get latestLecsensDataByDate => _newestLecsensDataByDate;
+  get lecsensDataByDateList => _lecsensDataByDateList;
 
-  setLecsensList(ApiResponse<LecsensList> response) {
+  setLecsensDataList(QueryResponse<LecsensDataList> response) {
     lecsensDataList = response;
-    notifyListeners();
-  }
 
-  setVoltametryDataList(ApiResponse<VoltametryDataList> response) {
-    voltametryDataList = response;
-
-    if (response.status == Status.completed && response.data != null && response.data!.voltametryDataList.isNotEmpty) {
-      _newestVoltametryData = response.data!.getLatestData();
+    if (response.status == Status.completed && response.data != null && response.data!.lecsensDataList.isNotEmpty) {
+      _newestLecsensData = response.data!.getLatestData();
     } else {
-      _newestVoltametryData = null;
+      _newestLecsensData = null;
     }
 
-    if (_newestVoltametryData != null) {
-      _chartData = Utils.getConvertedVoltametryData(_newestVoltametryData!);
+    if (_newestLecsensData != null) {
+      _chartData = Utils.getConvertedVoltametryData(_newestLecsensData!);
     } else {
       _chartData = null;
     }
@@ -58,14 +51,21 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setVoltametryDataByDateList(String date) {
-    String dateOnly = Utils().getFormattedDate(date, 10);
-    _voltametryDataByDateList = voltametryDataList.data!.getVoltametryDataByDate(dateOnly);
-    if (_voltametryDataByDateList != null && _voltametryDataByDateList!.isNotEmpty) {
-      _newestVoltametryDataByDate = _voltametryDataByDateList!.first;
+  setLecsensDataByDateList(QueryResponse<LecsensDataList> response) {
+    lecsensDataList = response;
+
+    if (response.status == Status.completed && response.data != null && response.data!.lecsensDataList.isNotEmpty) {
+      _newestLecsensDataByDate = response.data!.getLatestData();
     } else {
-      _newestVoltametryDataByDate = null;
+      _newestLecsensDataByDate = null;
     }
+
+    if (_newestLecsensDataByDate != null) {
+      _chartData = Utils.getConvertedVoltametryData(_newestLecsensDataByDate!);
+    } else {
+      _chartData = null;
+    }
+
     notifyListeners();
   }
 
@@ -79,65 +79,67 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout(BuildContext context) async {
+  void setLecsensDataByDateListQuery(BuildContext context, String date) async {
+    setLecsensDataByDateList(QueryResponse.loading());
+    final userViewModel = UserViewModel();
+    final user = await userViewModel.getCurrentUser();
+
+    if (user != null) {
+      setFetchingData(true);
+      _homeRepository.fetchAllLecsensDataByDate(_macAddress, date).then((value) {
+        setFetchingData(false);
+        try {
+          // final lecsensDataList = LecsensDataList.fromJson(value);
+          setLecsensDataByDateList(QueryResponse.completed(value));
+          Utils.showSnackBar(context, 'Data fetched successfully');
+        } catch (e) {
+          Utils.showSnackBar(context, 'Failed to parse lecsens data.');
+          setLecsensDataByDateList(QueryResponse.error('Failed to parse lecsens data.'));
+        }
+      }).onError((error, stackTrace) {
+        setFetchingData(false);
+        Utils.showSnackBar(context, error.toString());
+        setLecsensDataByDateList(QueryResponse.error(error.toString()));
+      });
+    }
+  }
+
+  void setLecsensDataListQuery(BuildContext context) async {
+    setLecsensDataList(QueryResponse.loading());
+    final userViewModel = UserViewModel();
+    final user = await userViewModel.getCurrentUser();
+
+    if (user != null) {
+      setFetchingData(true);
+      _homeRepository.fetchAllLecsensData(_macAddress).then((value) {
+        setFetchingData(false);
+        try {
+          // final lecsensDataList = LecsensDataList.fromJson(value);
+          setLecsensDataList(QueryResponse.completed(value));
+          Utils.showSnackBar(context, 'Data fetched successfully');
+        } catch (e) {
+          Utils.showSnackBar(context, 'Failed to parse lecsens data.');
+          setLecsensDataList(QueryResponse.error('Failed to parse lecsens data.'));
+        }
+      }).onError((error, stackTrace) {
+        setFetchingData(false);
+        Utils.showSnackBar(context, error.toString());
+        setLecsensDataList(QueryResponse.error(error.toString()));
+      });
+    }
+  }
+
+  void manualSync(BuildContext context) async {
     final userPreference = Provider.of<UserViewModel>(context, listen: false);
     User? user = await userPreference.getCurrentUser();
 
     if (user != null) {
-      LecSensDatabase.instance.removeUser(user);
-      userPreference.removeUser();
-      Navigator.pushNamed(context, RouteNames.login);
+      setFetchingData(true);
+      Utils().syncDatabase(context, user, userPreference.getLastSyncTime().toString());
+      setFetchingData(false);
+      Utils.showSnackBar(context, 'Data synced successfully');
     } else {
       Utils.showSnackBar(context, 'User not found');
-    }
-  }
-
-  void fetchLecsensListApi(BuildContext context) async {
-    setLecsensList(ApiResponse.loading());
-    final userViewModel = UserViewModel();
-    final user = await userViewModel.getCurrentUser();
-
-    if (user != null) {
-      setFetchingData(true);
-      _homeRepository.fetchLecsensDataByUserID(user.token).then((value) {
-        setFetchingData(false);
-        if (value['message'] == 'success') {
-          final lecsensList = LecsensList.fromJson(value);
-          setLecsensList(ApiResponse.completed(lecsensList));
-        } else {
-          Utils.showSnackBar(context, value['message']);
-          setLecsensList(ApiResponse.error(value['message']));
-        }
-      }).onError((error, stackTrace) {
-        setFetchingData(false);
-        Utils.showSnackBar(context, error.toString());
-        setLecsensList(ApiResponse.error(error.toString()));
-      });
-    }
-  }
-
-  void setVoltametryDataListApi(BuildContext context) async {
-    setVoltametryDataList(ApiResponse.loading());
-    final userViewModel = UserViewModel();
-    final user = await userViewModel.getCurrentUser();
-
-    if (user != null) {
-      setFetchingData(true);
-      _homeRepository.fetchVoltametryDataByAlat(user.token, _macAddress).then((value) {
-        setFetchingData(false);
-        try {
-          final voltametryList = VoltametryDataList.fromJson(value);
-          setVoltametryDataList(ApiResponse.completed(voltametryList));
-          Utils.showSnackBar(context, 'Data fetched successfully');
-        } catch (e) {
-          Utils.showSnackBar(context, 'Failed to parse voltametry data.');
-          setVoltametryDataList(ApiResponse.error('Failed to parse voltametry data.'));
-        }
-      }).onError((error, stackTrace) {
-        setFetchingData(false);
-        Utils.showSnackBar(context, error.toString());
-        setVoltametryDataList(ApiResponse.error(error.toString()));
-      });
     }
   }
 
@@ -152,6 +154,19 @@ class HomeViewModel with ChangeNotifier {
     } else {
       _title = 'Halo';
       notifyListeners();
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    final userPreference = Provider.of<UserViewModel>(context, listen: false);
+    User? user = await userPreference.getCurrentUser();
+
+    if (user != null) {
+      Utils().dropAllData(context, user);
+      userPreference.removeUser();
+      Navigator.pushNamed(context, RouteNames.login);
+    } else {
+      Utils.showSnackBar(context, 'User not found');
     }
   }
 }

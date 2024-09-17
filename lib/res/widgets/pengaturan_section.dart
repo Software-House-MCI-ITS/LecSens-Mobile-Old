@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/viewModel/home_view_model.dart';
+import 'package:lecsens/utils/utils.dart';
 
 class PengaturanSection extends StatefulWidget {
   final HomeViewModel homeviewmodel;
@@ -46,7 +47,7 @@ class PengaturanSectionState extends State<PengaturanSection> {
               title: const Text('Refresh data secara manual'),
               leading: const Icon(Icons.refresh),
               onTap: () {
-                // Handle onTap
+                widget.homeviewmodel.manualSync(context);
               },
             ),
           ),

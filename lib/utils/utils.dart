@@ -2,9 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/models/lecsens_data_model.dart';
 import 'package:lecsens/res/chart_data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:lecsens/data/network/network_api_services.dart';
+import 'package:lecsens/res/widgets/app_urls.dart';
+import 'package:lecsens/models/user_model.dart';
+import 'package:lecsens/data/db/lecsens_database.dart';
 
 class Utils {
   static void showSnackBar(BuildContext context, String message) {
@@ -55,7 +59,7 @@ class Utils {
     return macAddress.replaceAll(':', '%3A');
   }
 
-  static List<ChartData> getConvertedVoltametryData(VoltametryData data) {
+  static List<ChartData> getConvertedVoltametryData(LecsensData data) {
     List<double> dataX = data.data_x;
     List<double> dataY = data.data_y;
     List<double> peakX = data.peak_x;
@@ -72,7 +76,7 @@ class Utils {
     return chartData;
   }
 
-  static List<ChartData> getConvertedPpmData(List<VoltametryData> data) {
+  static List<ChartData> getConvertedPpmData(List<LecsensData> data) {
     List<ChartData> chartData = [];
 
     for (int i = 0; i < data.length; i++) {
@@ -104,5 +108,53 @@ class Utils {
         );
       },
     );
+  }
+
+  Future<bool> syncDatabase(BuildContext context, User user, String last_sync_time) async {
+    Utils.showSnackBar(context, 'Syncing database ...');
+    final NetworkApiServices _network = NetworkApiServices();
+
+    try {
+      // alat
+      String alat_url = AppUrls.allAlatEndpoint + last_sync_time;
+      final responseAlat = await _network.getGetApiResponse(alat_url, user.token);
+      if (responseAlat != null) {
+        await LecSensDatabase.instance.bulkInsertAlat(responseAlat);
+      }
+
+      String alat_updated_url = AppUrls.allAlatUpdatedEndpoint + last_sync_time;
+      final responseAlatUpdated = await _network.getGetApiResponse(alat_updated_url, user.token);
+      if (responseAlatUpdated != null) {
+        await LecSensDatabase.instance.bulkUpdateAlat(responseAlatUpdated);
+      }
+
+      // lecsens data
+      String lecsens_data_url = AppUrls.allLecsensData + last_sync_time;
+      final responseLecsensData = await _network.getGetApiResponse(lecsens_data_url, user.token);
+      if (responseLecsensData != null) {
+        await LecSensDatabase.instance.bulkInsertLecsensData(responseLecsensData);
+      }
+
+      String lecsens_data_updated_url = AppUrls.allLecsensDataUpdatedEndpoint + last_sync_time;
+      final responseLecsensDataUpdated = await _network.getGetApiResponse(lecsens_data_updated_url, user.token);
+      if (responseLecsensDataUpdated != null) {
+        await LecSensDatabase.instance.bulkUpdateLecsensData(responseLecsensDataUpdated);
+      }
+
+      Utils.showSnackBar(context, 'Database synced successfully');
+      return true;
+    } catch (e) {
+      Utils.showSnackBar(context, 'Failed to sync alat data');
+      return false;
+    }
+  }
+
+  Future<bool> dropAllData(BuildContext context, User user) async {
+    Utils.showSnackBar(context, 'Dropping all data ...');
+    await LecSensDatabase.instance.deleteAllAlat();
+    await LecSensDatabase.instance.deleteAllLecsensData();
+    await LecSensDatabase.instance.removeUser(user);
+    Utils.showSnackBar(context, 'All data dropped successfully');
+    return true;
   }
 }

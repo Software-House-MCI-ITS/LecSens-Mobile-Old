@@ -4,12 +4,12 @@ import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/viewModel/home_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:lecsens/models/voltametry_data_model.dart';
+import 'package:lecsens/models/lecsens_data_model.dart';
 
 class ChartCard extends StatefulWidget {
-  List<VoltametryData>? voltametryDataList;
+  List<LecsensData>? lecsensDataList;
   final String title;
-  ChartCard({super.key, required this.title, required this.voltametryDataList});
+  ChartCard({super.key, required this.title, required this.lecsensDataList});
 
   @override
   _ChartCardState createState() => _ChartCardState();
@@ -79,7 +79,7 @@ class _ChartCardState extends State<ChartCard> {
             ),
             Visibility(
               visible: !_infoVisible,
-              child: widget.voltametryDataList == null ?
+              child: widget.lecsensDataList == null ?
               const Padding(
                 padding: EdgeInsets.only(left: 16, right: 16, bottom: 25),
                 child: Text(
@@ -94,7 +94,7 @@ class _ChartCardState extends State<ChartCard> {
               SfCartesianChart(
                 series: <CartesianSeries<ChartData, double>>[
                   ColumnSeries(
-                    dataSource: Utils.getConvertedPpmData(widget.voltametryDataList ?? []),
+                    dataSource: Utils.getConvertedPpmData(widget.lecsensDataList ?? []),
                     xValueMapper: (ChartData data, _) => data.x,
                     yValueMapper: (ChartData data, _) => data.y
                   )
