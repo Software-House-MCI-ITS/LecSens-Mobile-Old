@@ -147,7 +147,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                     color: const Color(0xffD9E8FF),
                                     child: ListTile(
                                       title: Text(
-                                        'Found: ${shareLocationViewModel.btDevices[index].name}',
+                                        '${shareLocationViewModel.btDevices[index].name}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),

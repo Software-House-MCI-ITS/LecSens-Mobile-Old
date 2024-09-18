@@ -83,12 +83,12 @@ class ShareLocationViewModel with ChangeNotifier {
     
     try {
       await _selectedDevice!.connect();
+
       List<BluetoothService> services = await _selectedDevice!.discoverServices();
-    
-      services.forEach((service) {
-        print('uuid: ${service.uuid}');
-        
-        service.characteristics.forEach((characteristic) {
+
+      for (var service in services) {
+        for (var characteristic in service.characteristics) {
+          print('uuid characteristic: ${characteristic.uuid}');
           if (characteristic.properties.write) {
             String data = '${wifiName};${wifiPass};token;${_currentLocation!.latitude};${_currentLocation!.longitude}';
             print('data: $data');
@@ -97,15 +97,22 @@ class ShareLocationViewModel with ChangeNotifier {
 
             characteristic.write(bytes);
           }
-        });
-      });
+        }
+      }
 
-      Utils.showSnackBar(context, 'Location data sent successfully');
-      Navigator.pushNamed(context, RouteNames.home);
-  } catch (e) {
-    Utils.showSnackBar(context, 'Failed to send location data');
-  }
-
-    await selectedDevice.disconnect();
+      for (var service in services) {
+        for (var characteristic in service.characteristics) {
+          print('uuid characteristic: ${characteristic.uuid}');
+          if (characteristic.properties.notify) {
+            await characteristic.setNotifyValue(true);
+            characteristic.value.listen((value) {
+              print('Notification received: ${utf8.decode(value)}');
+            });
+          }
+        }
+      }
+    } catch (e) {
+      Utils.showSnackBar(context, 'Failed to send location data');
+    }
   }
 }
