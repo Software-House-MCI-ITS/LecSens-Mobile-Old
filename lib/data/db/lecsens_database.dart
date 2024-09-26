@@ -14,7 +14,7 @@ class LecSensDatabase {
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('lecsens_trial5.db');
+    _database = await _initDB('lecsens_trial14.db');
     return _database!;
   }
 
@@ -38,28 +38,17 @@ class LecSensDatabase {
     const timestampType = 'TIMESTAMP NOT NULL';
 
     await db.execute('''
-      CREATE TABLE $tableUsers (
-        ${UserFields.id} $idType,
-        ${UserFields.token} $textType,
-        ${UserFields.userName} $textType,
-        ${UserFields.email} $textType,
-        ${UserFields.fullName} $textType,
-        ${UserFields.isVerified} $textType,
-        ${UserFields.role} $textType
-      )
-    ''');
-
-    await db.execute('''
       CREATE TABLE $tableAlat (
         ${AlatFields.id} $idType,
+        ${AlatFields.userID} $textType,
+        ${AlatFields.alatID} $textType,
+        ${AlatFields.role} $textType,
         ${AlatFields.owner} $textType,
         ${AlatFields.namaAlat} $textType,
-        ${AlatFields.status} $textType,
+        ${AlatFields.status} $integerType,
         ${AlatFields.pwm} $textType,
-        ${AlatFields.mode} $textType,
-        ${AlatFields.macAddress} $textType,
-        ${AlatFields.createdAt} $timestampType,
-        ${AlatFields.updatedAt} $timestampType
+        ${AlatFields.mode} $integerType,
+        ${AlatFields.macAddress} $textType
       )
     ''');
 
@@ -70,40 +59,18 @@ class LecSensDatabase {
         ${LecsensDataFields.alamat} $textType,
         ${LecsensDataFields.data_x} $textType,
         ${LecsensDataFields.data_y} $textType,
+        ${LecsensDataFields.user_id} $textType,
+        ${LecsensDataFields.epc} $integerType,
+        ${LecsensDataFields.ipc} $integerType,
+        ${LecsensDataFields.ipa} $integerType,
+        ${LecsensDataFields.epa} $integerType,
         ${LecsensDataFields.peak_x} $realType,
         ${LecsensDataFields.peak_y} $realType,
         ${LecsensDataFields.ppm} $realType,
         ${LecsensDataFields.label} $textType,
-        ${LecsensDataFields.createdAt} $timestampType,
-        ${LecsensDataFields.updatedAt} $timestampType
+        ${LecsensDataFields.createdAt} $timestampType
       )
     ''');
-  }
-
-  Future<User> insertUser(User user) async {
-    try {
-      final db = await instance.database;
-      await db.insert(tableUsers, user.toJson());
-      print('Inserted user');
-      print('Inserted user');
-      print('Inserted user');
-
-      return user;
-    } catch (ex) {
-      throw Exception("Error in creating user" + ex.toString());
-    }
-  }
-
-  Future<void> removeUser(User user) async {
-    try {
-      final db = await instance.database;
-      db.delete(tableUsers, where: '${UserFields.id} = ?', whereArgs: [user.id]);
-      print('Removed user');
-      print('Removed user');
-      print('Removed user');
-    } catch (ex) {
-      throw Exception("Error in deleting user");
-    }
   }
 
   Future<void> bulkInsertAlat(List<Alat> alatList) async {
@@ -116,9 +83,6 @@ class LecSensDatabase {
       }
 
       await batch.commit(noResult: true);
-      print('Inserted alat');
-      print('Inserted alat');
-      print('Inserted alat');
     } catch (ex) {
       throw Exception("Error in creating alat" + ex.toString());
     }
@@ -130,13 +94,15 @@ class LecSensDatabase {
       final batch = db.batch();
 
       for (var lecsensData in lecsensDataList) {
-        batch.insert(tableLecsensData, lecsensData.toJson());
+        print('data: ${lecsensData.toJson()}');
+        try {
+          batch.insert(tableLecsensData, lecsensData.toJson());
+        } catch (e) {
+          print('Error in inserting lecsens data: $e');
+        }
       }
 
       await batch.commit(noResult: true);
-      print('Inserted lecsens data');
-      print('Inserted lecsens data');
-      print('Inserted lecsens data');
     } catch (ex) {
       throw Exception("Error in creating lecsens data" + ex.toString());
     }

@@ -91,7 +91,7 @@ class HomeViewModel with ChangeNotifier {
         try {
           // final lecsensDataList = LecsensDataList.fromJson(value);
           setLecsensDataByDateList(QueryResponse.completed(value));
-          Utils.showSnackBar(context, 'Data fetched successfully');
+          // Utils.showSnackBar(context, 'Data fetched successfully');
         } catch (e) {
           Utils.showSnackBar(context, 'Failed to parse lecsens data.');
           setLecsensDataByDateList(QueryResponse.error('Failed to parse lecsens data.'));
@@ -101,6 +101,16 @@ class HomeViewModel with ChangeNotifier {
         Utils.showSnackBar(context, error.toString());
         setLecsensDataByDateList(QueryResponse.error(error.toString()));
       });
+    }
+  }
+
+  Future<void>resyncData(BuildContext context) async {
+    final userViewModel = UserViewModel();
+    final user = await userViewModel.getCurrentUser();
+    final last_sync_time = await userViewModel.getLastSyncTime();
+
+    if (user != null) {
+      Utils().syncDatabase(context, user, last_sync_time);
     }
   }
 
@@ -116,7 +126,7 @@ class HomeViewModel with ChangeNotifier {
         try {
           // final lecsensDataList = LecsensDataList.fromJson(value);
           setLecsensDataList(QueryResponse.completed(value));
-          Utils.showSnackBar(context, 'Data fetched successfully');
+          // Utils.showSnackBar(context, 'Data fetched successfully');
         } catch (e) {
           Utils.showSnackBar(context, 'Failed to parse lecsens data.');
           setLecsensDataList(QueryResponse.error('Failed to parse lecsens data.'));

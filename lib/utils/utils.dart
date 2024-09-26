@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lecsens/models/alat_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/models/lecsens_data_model.dart';
@@ -62,15 +63,10 @@ class Utils {
   static List<ChartData> getConvertedVoltametryData(LecsensData data) {
     List<double> dataX = data.data_x;
     List<double> dataY = data.data_y;
-    List<double> peakX = data.peak_x;
     List<ChartData> chartData = [];
 
     for (int i = 0; i < dataX.length; i++) {
-      if ((dataX[i] < peakX[0] + 5 && dataX[i] > peakX[0] - 5) || (dataX[i] > peakX[1] + 5 && dataX[i] > peakX[1] - 5)) {
-        chartData.add(ChartData(dataX[i], dataY[i], Colors.red));
-      } else {
-        chartData.add(ChartData(dataX[i], dataY[i], Colors.blue));
-      }
+      chartData.add(ChartData(dataX[i], dataY[i], Colors.red));
     }
 
     return chartData;
@@ -110,41 +106,39 @@ class Utils {
     );
   }
 
+  String formatTime(String time) {
+    String formattedTime = time.substring(0, 19).replaceAll(' ', '%20');
+    return formattedTime;
+  }
+
   Future<bool> syncDatabase(BuildContext context, User user, String last_sync_time) async {
     Utils.showSnackBar(context, 'Syncing database ...');
     final NetworkApiServices _network = NetworkApiServices();
 
     try {
-      // alat
-      String alat_url = AppUrls.allAlatEndpoint + last_sync_time;
-      final responseAlat = await _network.getGetApiResponse(alat_url, user.token);
-      if (responseAlat != null) {
-        await LecSensDatabase.instance.bulkInsertAlat(responseAlat);
-      }
-
-      String alat_updated_url = AppUrls.allAlatUpdatedEndpoint + last_sync_time;
-      final responseAlatUpdated = await _network.getGetApiResponse(alat_updated_url, user.token);
-      if (responseAlatUpdated != null) {
-        await LecSensDatabase.instance.bulkUpdateAlat(responseAlatUpdated);
-      }
-
-      // lecsens data
-      String lecsens_data_url = AppUrls.allLecsensData + last_sync_time;
-      final responseLecsensData = await _network.getGetApiResponse(lecsens_data_url, user.token);
-      if (responseLecsensData != null) {
-        await LecSensDatabase.instance.bulkInsertLecsensData(responseLecsensData);
-      }
-
-      String lecsens_data_updated_url = AppUrls.allLecsensDataUpdatedEndpoint + last_sync_time;
+      // bulk insert lecsens data
+      String lecsens_data_updated_url = AppUrls.allLecsensDataUpdatedEndpoint + formatTime(last_sync_time);
       final responseLecsensDataUpdated = await _network.getGetApiResponse(lecsens_data_updated_url, user.token);
+
       if (responseLecsensDataUpdated != null) {
-        await LecSensDatabase.instance.bulkUpdateLecsensData(responseLecsensDataUpdated);
+        final lecsensDataUpdated = responseLecsensDataUpdated.map((data) => LecsensData.fromJson(data)).toList().cast<LecsensData>();
+        await LecSensDatabase.instance.bulkInsertLecsensData(lecsensDataUpdated);
+      }
+
+      // bulk insert access
+      String access_data_updated_url = AppUrls.allAlatUpdatedEndpoint;
+      final responseAccessDataUpdated = await _network.getGetApiResponse(access_data_updated_url, user.token);
+
+      if (responseAccessDataUpdated != null) {
+        final accessDataUpdated = responseAccessDataUpdated.map((data) => Alat.fromJson(data)).toList().cast<Alat>();
+        await LecSensDatabase.instance.bulkInsertAlat(accessDataUpdated);
       }
 
       Utils.showSnackBar(context, 'Database synced successfully');
       return true;
     } catch (e) {
-      Utils.showSnackBar(context, 'Failed to sync alat data');
+      print('Error in syncing database: $e');
+      Utils.showSnackBar(context, 'Failed to sync alat data, retry later');
       return false;
     }
   }
@@ -153,7 +147,6 @@ class Utils {
     Utils.showSnackBar(context, 'Dropping all data ...');
     await LecSensDatabase.instance.deleteAllAlat();
     await LecSensDatabase.instance.deleteAllLecsensData();
-    await LecSensDatabase.instance.removeUser(user);
     Utils.showSnackBar(context, 'All data dropped successfully');
     return true;
   }

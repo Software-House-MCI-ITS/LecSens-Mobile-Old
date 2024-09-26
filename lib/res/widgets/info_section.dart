@@ -12,6 +12,7 @@ import 'package:lecsens/res/widgets/voltametry_card.dart';
 import 'package:lecsens/utils/routes/routes_names.dart';
 import 'package:lecsens/res/widgets/info_section.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:lecsens/utils/utils.dart';
 
 class InfoSection extends StatefulWidget {
   final HomeViewModel homeviewmodel;
@@ -27,6 +28,7 @@ class _InfoSectionState extends State<InfoSection> {
 
   void _onRefresh() async {
     widget.homeviewmodel.setLecsensDataListQuery(context);
+    widget.homeviewmodel.resyncData(context);
     _refreshController.refreshCompleted();
   }
 

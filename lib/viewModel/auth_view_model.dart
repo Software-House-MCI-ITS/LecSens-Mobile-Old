@@ -44,10 +44,10 @@ class AuthViewModel with ChangeNotifier {
 
         User user = User.fromJson(value);
         userPreference.saveCurrentUser(user);
-        LecSensDatabase.instance.insertUser(user);
         Utils().syncDatabase(context, user, '');
 
         String time_now = DateTime.now().toString();
+        print('Time now: $time_now');
         userPreference.setLastSyncTime(time_now);
 
         Utils.showSnackBar(context, "Login success");

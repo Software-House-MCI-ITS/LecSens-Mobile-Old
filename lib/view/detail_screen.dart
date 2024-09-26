@@ -63,7 +63,7 @@ class DetailScreen extends StatelessWidget {
                     Padding(padding: const EdgeInsets.fromLTRB(27, 10, 27, 0),
                       child: TextFormField(
                         readOnly: true,
-                        initialValue: 'Peak : (${voltametryData.peak_x[0]}, ${voltametryData.peak_y[0]}) dan (${voltametryData.peak_x[1]}, ${voltametryData.peak_y[1]})',
+                        initialValue: 'Ppm : ${voltametryData.ppm}',
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -74,7 +74,40 @@ class DetailScreen extends StatelessWidget {
                     Padding(padding: const EdgeInsets.fromLTRB(27, 10, 27, 0),
                       child: TextFormField(
                         readOnly: true,
-                        initialValue: 'Ppm : ${voltametryData.ppm}',
+                        initialValue: 'EPC : ${voltametryData.epc}',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: const EdgeInsets.fromLTRB(27, 10, 27, 0),
+                      child: TextFormField(
+                        readOnly: true,
+                        initialValue: 'IPC : ${voltametryData.ipc}',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: const EdgeInsets.fromLTRB(27, 10, 27, 0),
+                      child: TextFormField(
+                        readOnly: true,
+                        initialValue: 'IPA : ${voltametryData.ipa}',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: const EdgeInsets.fromLTRB(27, 10, 27, 0),
+                      child: TextFormField(
+                        readOnly: true,
+                        initialValue: 'EPA : ${voltametryData.epa}',
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),

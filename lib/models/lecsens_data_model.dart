@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-const String tableLecsensData = 'voltametry_data';
+const String tableLecsensData = 'lecsens_data';
 
 class LecsensDataFields {
   static final List<String> values = [
-    id, alatID, alamat, data_x, data_y, peak_x, peak_y
+    id, alatID, alamat, data_x, data_y, user_id, epc, ipc, ipa, epa, peak_x, peak_y
   ];
 
   static const String id = 'id';
@@ -12,12 +12,16 @@ class LecsensDataFields {
   static const String alamat = 'alamat';
   static const String data_x = 'data_x';
   static const String data_y = 'data_y';
+  static const String user_id = 'user_id';
+  static const String epc = 'epc';
+  static const String ipc = 'ipc';
+  static const String ipa = 'ipa';
+  static const String epa = 'epa';
   static const String peak_x = 'peak_x';
   static const String peak_y = 'peak_y';
   static const String ppm = 'ppm';
   static const String label = 'label';
   static const String createdAt = 'created_at';
-  static const String updatedAt = 'updated_at';
 }
 
 class LecsensData {
@@ -26,12 +30,16 @@ class LecsensData {
   final String alamat;
   final List<double> data_x;
   final List<double> data_y;
+  final String userID;
+  final int epc;
+  final int ipc;
+  final int ipa;
+  final int epa;
   final List<double> peak_x;
   final List<double> peak_y;
   final int ppm;
   final String label;
   final String createdAt;
-  final String updatedAt;
 
   LecsensData({
     this.id,
@@ -39,28 +47,42 @@ class LecsensData {
     required this.alamat,
     required this.data_x,
     required this.data_y,
+    required this.userID,
+    required this.epc,
+    required this.ipc,
+    required this.ipa,
+    required this.epa,
     required this.peak_x,
     required this.peak_y,
     required this.ppm,
     required this.label,
-    required this.createdAt,
-    required this.updatedAt
+    required this.createdAt
   });
 
   factory LecsensData.fromJson(Map<String, dynamic> json) {
-    return LecsensData(
-      id: json[LecsensDataFields.id] as String,
-      alatID: json[LecsensDataFields.alatID] as String,
-      alamat: json[LecsensDataFields.alamat] as String,
-      data_x: (jsonDecode(json[LecsensDataFields.data_x]) as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-      data_y: (jsonDecode(json[LecsensDataFields.data_y]) as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-      peak_x: (json[LecsensDataFields.peak_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-      peak_y: (json[LecsensDataFields.peak_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-      ppm: json[LecsensDataFields.ppm] as int,
-      label: json[LecsensDataFields.label] as String,
-      createdAt: json[LecsensDataFields.createdAt] as String,
-      updatedAt: json[LecsensDataFields.updatedAt] as String
-    );
+    try {
+      final data = LecsensData(
+        id: json[LecsensDataFields.id] as String,
+        alatID: json[LecsensDataFields.alatID] as String,
+        alamat: json[LecsensDataFields.alamat] as String,
+        data_x: (json[LecsensDataFields.data_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+        data_y: (json[LecsensDataFields.data_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+        userID: json[LecsensDataFields.user_id] as String,
+        epc: json[LecsensDataFields.epc] as int,
+        ipc: json[LecsensDataFields.ipc] as int,
+        ipa: json[LecsensDataFields.ipa] as int,
+        epa: json[LecsensDataFields.epa] as int,
+        peak_x: (json[LecsensDataFields.peak_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+        peak_y: (json[LecsensDataFields.peak_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+        ppm: json[LecsensDataFields.ppm] as int,
+        label: json[LecsensDataFields.label] as String,
+        createdAt: json[LecsensDataFields.createdAt] as String,
+      );
+      return data;
+    } catch (e) {
+      print(e);
+      throw Exception('Error in parsing LecsensData');
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -70,12 +92,16 @@ class LecsensData {
       LecsensDataFields.alamat: alamat,
       LecsensDataFields.data_x: jsonEncode(data_x),
       LecsensDataFields.data_y: jsonEncode(data_y),
-      LecsensDataFields.peak_x: peak_x,
-      LecsensDataFields.peak_y: peak_y,
+      LecsensDataFields.user_id: userID,
+      LecsensDataFields.epc: epc,
+      LecsensDataFields.ipc: ipc,
+      LecsensDataFields.ipa: ipa,
+      LecsensDataFields.epa: epa,
+      LecsensDataFields.peak_x: jsonEncode(peak_x),
+      LecsensDataFields.peak_y: jsonEncode(peak_y),
       LecsensDataFields.ppm: ppm,
       LecsensDataFields.label: label,
       LecsensDataFields.createdAt: createdAt,
-      LecsensDataFields.updatedAt: updatedAt
     };
   }
 }
