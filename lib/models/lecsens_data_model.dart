@@ -65,23 +65,52 @@ class LecsensData {
         id: json[LecsensDataFields.id] as String,
         alatID: json[LecsensDataFields.alatID] as String,
         alamat: json[LecsensDataFields.alamat] as String,
-        data_x: (json[LecsensDataFields.data_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-        data_y: (json[LecsensDataFields.data_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+
+        data_x: (json[LecsensDataFields.data_x] is String)
+            ? (jsonDecode(json[LecsensDataFields.data_x]) as List<dynamic>).map<double>((e) => e.toDouble()).toList()
+            : (json[LecsensDataFields.data_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+
+        data_y: (json[LecsensDataFields.data_y] is String)
+            ? (jsonDecode(json[LecsensDataFields.data_y]) as List<dynamic>).map<double>((e) => e.toDouble()).toList()
+            : (json[LecsensDataFields.data_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+
         userID: json[LecsensDataFields.user_id] as String,
-        epc: json[LecsensDataFields.epc] as int,
-        ipc: json[LecsensDataFields.ipc] as int,
-        ipa: json[LecsensDataFields.ipa] as int,
-        epa: json[LecsensDataFields.epa] as int,
-        peak_x: (json[LecsensDataFields.peak_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-        peak_y: (json[LecsensDataFields.peak_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
-        ppm: json[LecsensDataFields.ppm] as int,
+
+        epc: (json[LecsensDataFields.epc] is double)
+            ? (json[LecsensDataFields.epc] as double).toInt()
+            : json[LecsensDataFields.epc] as int,
+
+        ipc: (json[LecsensDataFields.ipc] is double)
+            ? (json[LecsensDataFields.ipc] as double).toInt()
+            : json[LecsensDataFields.ipc] as int,
+
+        ipa: (json[LecsensDataFields.ipa] is double)
+            ? (json[LecsensDataFields.ipa] as double).toInt()
+            : json[LecsensDataFields.ipa] as int,
+
+        epa: (json[LecsensDataFields.epa] is double)
+            ? (json[LecsensDataFields.epa] as double).toInt()
+            : json[LecsensDataFields.epa] as int,
+
+        peak_x: (json[LecsensDataFields.peak_x] is String)
+            ? (jsonDecode(json[LecsensDataFields.peak_x]) as List<dynamic>).map<double>((e) => e.toDouble()).toList()
+            : (json[LecsensDataFields.peak_x] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+
+        peak_y: (json[LecsensDataFields.peak_y] is String)
+            ? (jsonDecode(json[LecsensDataFields.peak_y]) as List<dynamic>).map<double>((e) => e.toDouble()).toList()
+            : (json[LecsensDataFields.peak_y] as List<dynamic>).map<double>((e) => e.toDouble()).toList(),
+
+        ppm: (json[LecsensDataFields.ppm] is double)
+            ? (json[LecsensDataFields.ppm] as double).toInt()
+            : json[LecsensDataFields.ppm] as int,
+
         label: json[LecsensDataFields.label] as String,
         createdAt: json[LecsensDataFields.createdAt] as String,
       );
       return data;
     } catch (e) {
       print(e);
-      throw Exception('Error in parsing LecsensData');
+      throw Exception('Error in parsing LecsensData: $e');
     }
   }
 
@@ -132,6 +161,7 @@ class LecsensDataList {
   }
 
   List<LecsensData> getMikroplastikData() {
+    print('all data: ${lecsensDataList}');
     return lecsensDataList.where((element) => element.label.toLowerCase() == 'mikroplastik' || element.label.toLowerCase() == 'microplastic').toList();
   }
 

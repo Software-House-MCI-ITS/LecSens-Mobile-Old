@@ -119,6 +119,43 @@ class Utils {
       // bulk insert lecsens data
       String lecsens_data_updated_url = AppUrls.allLecsensDataUpdatedEndpoint + formatTime(last_sync_time);
       final responseLecsensDataUpdated = await _network.getGetApiResponse(lecsens_data_updated_url, user.token);
+    //   final responseLecsensDataUpdated = [
+    //   {
+    //     "id": "51e8ea70-777e-4349-b60f-4ddd5fbc93a0",
+    //     "alat_id": "d055daa3-b203-4381-b00e-396402e787f9",
+    //     "user_id": "41179e39-da3a-4c8e-a360-0050610f3317",
+    //     "alamat": "Surabaya",
+    //     "epc": 0,
+    //     "ipc": 0,
+    //     "ipa": 0,
+    //     "epa": 0,
+    //     "data_x": [
+    //       1,
+    //       2,
+    //       3,
+    //       4,
+    //       5
+    //     ],
+    //     "data_y": [
+    //       1,
+    //       2,
+    //       3,
+    //       4,
+    //       5
+    //     ],
+    //     "peak_x": [
+    //       1,
+    //       2
+    //     ],
+    //     "peak_y": [
+    //       1,
+    //       2
+    //     ],
+    //     "ppm": 0,
+    //     "label": "timbal",
+    //     "created_at": "2024-09-10 19:42:50.678925 +0700 +07"
+    //   }
+    // ];
 
       if (responseLecsensDataUpdated != null) {
         final lecsensDataUpdated = responseLecsensDataUpdated.map((data) => LecsensData.fromJson(data)).toList().cast<LecsensData>();

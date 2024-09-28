@@ -89,7 +89,7 @@ class HomeViewModel with ChangeNotifier {
       _homeRepository.fetchAllLecsensDataByDate(_macAddress, date).then((value) {
         setFetchingData(false);
         try {
-          // final lecsensDataList = LecsensDataList.fromJson(value);
+          final lecsensDataList = value;
           setLecsensDataByDateList(QueryResponse.completed(value));
           // Utils.showSnackBar(context, 'Data fetched successfully');
         } catch (e) {
@@ -121,10 +121,10 @@ class HomeViewModel with ChangeNotifier {
 
     if (user != null) {
       setFetchingData(true);
-      _homeRepository.fetchAllLecsensData(_macAddress).then((value) {
+      _homeRepository.fetchAllLecsensData().then((value) {
         setFetchingData(false);
         try {
-          // final lecsensDataList = LecsensDataList.fromJson(value);
+          final lecsensDataList = value;
           setLecsensDataList(QueryResponse.completed(value));
           // Utils.showSnackBar(context, 'Data fetched successfully');
         } catch (e) {

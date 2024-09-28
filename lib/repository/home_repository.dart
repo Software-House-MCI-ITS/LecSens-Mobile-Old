@@ -3,9 +3,7 @@ import 'package:lecsens/res/widgets/app_urls.dart';
 import 'package:lecsens/utils/utils.dart';
 
 class HomeRepository {
-  Future<dynamic> fetchAllLecsensData(String macAddress) async {
-    final String formattedMacAddress = Utils.getFormattedMacAddress(macAddress);
-
+  Future<dynamic> fetchAllLecsensData() async {
     try {
       final allLecsensData = await LecSensDatabase.instance.getAllLecsensData();
       return allLecsensData;

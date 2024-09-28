@@ -27,8 +27,8 @@ class _InfoSectionState extends State<InfoSection> {
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
-    widget.homeviewmodel.setLecsensDataListQuery(context);
     widget.homeviewmodel.resyncData(context);
+    widget.homeviewmodel.setLecsensDataListQuery(context);
     _refreshController.refreshCompleted();
   }
 

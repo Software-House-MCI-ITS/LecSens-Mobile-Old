@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:lecsens/utils/utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -14,7 +15,7 @@ class LecSensDatabase {
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('lecsens_trial14.db');
+    _database = await _initDB('lecsens_trial15.db');
     return _database!;
   }
 
@@ -94,7 +95,6 @@ class LecSensDatabase {
       final batch = db.batch();
 
       for (var lecsensData in lecsensDataList) {
-        print('data: ${lecsensData.toJson()}');
         try {
           batch.insert(tableLecsensData, lecsensData.toJson());
         } catch (e) {
@@ -202,9 +202,10 @@ class LecSensDatabase {
   }
 
   Future<LecsensDataList> getAllLecsensDataByDate(String date) async {
+    final date_format = Utils().getFormattedDate(date, 10);
     try {
       final db = await instance.database;
-      final result = await db.query(tableLecsensData, where: '${LecsensDataFields.createdAt} LIKE ?', whereArgs: ['%$date%'], limit: 5);
+      final result = await db.query(tableLecsensData, where: '${LecsensDataFields.createdAt} LIKE ?', whereArgs: ['$date_format%'], limit: 5, orderBy: '${LecsensDataFields.createdAt} DESC');
 
       return LecsensDataList(lecsensDataList: result.map((json) => LecsensData.fromJson(json)).toList());
     } catch (ex) {

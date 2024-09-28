@@ -3,11 +3,13 @@ import 'package:lecsens/data/response/status.dart';
 import 'package:lecsens/data/response/query_response.dart';
 import 'package:lecsens/repository/riwayat_repository.dart';
 import 'package:lecsens/models/lecsens_data_model.dart';
+import 'package:lecsens/repository/home_repository.dart';
 import 'package:lecsens/utils/utils.dart';
 import 'package:lecsens/viewModel/user_view_model.dart';
 
 class RiwayatViewModel with ChangeNotifier {
   final _riwayatRepository = RiwayatRepository();
+  final _homeRepository = HomeRepository();
   bool _fetchingData = false;
   final String _macAddress = '00:00:00:00:00:00';
   int _page = 1;
@@ -28,7 +30,11 @@ class RiwayatViewModel with ChangeNotifier {
   }
 
   void setLecsensDataList(QueryResponse<LecsensDataList> response) {
-    voltametryDataListResponse = response;
+    if (response.status == Status.completed && response.data != null) {
+      _voltametryDataList = response.data!.lecsensDataList;
+    } else {
+      _voltametryDataList = <LecsensData>[];
+    }
     notifyListeners();
   }
 
@@ -39,11 +45,12 @@ class RiwayatViewModel with ChangeNotifier {
 
     if (user != null) {
       setFetchingData(true);
-      _riwayatRepository.fetchAllLecsensData(_macAddress, _page, filter).then((value) {
+    _homeRepository.fetchAllLecsensData().then((value) {
         setFetchingData(false);
         try {
-          // final lecsensDataList = LecsensDataList.fromJson(value);
+          final lecsensDataList = value;
           setLecsensDataList(QueryResponse.completed(value));
+          notifyListeners();
         } catch (e) {
           Utils.showSnackBar(context, 'Failed to parse voltametry data.');
           setLecsensDataList(QueryResponse.error('Failed to parse voltametry data.'));
