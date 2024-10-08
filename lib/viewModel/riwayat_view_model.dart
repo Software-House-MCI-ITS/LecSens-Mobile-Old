@@ -29,9 +29,9 @@ class RiwayatViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setLecsensDataList(QueryResponse<LecsensDataList> response) {
+  void setLecsensDataList(QueryResponse response) {
     if (response.status == Status.completed && response.data != null) {
-      _voltametryDataList = response.data!.lecsensDataList;
+      _voltametryDataList = response.data;
     } else {
       _voltametryDataList = <LecsensData>[];
     }
@@ -48,11 +48,33 @@ class RiwayatViewModel with ChangeNotifier {
     _homeRepository.fetchAllLecsensData().then((value) {
         setFetchingData(false);
         try {
-          final lecsensDataList = value;
-          setLecsensDataList(QueryResponse.completed(value));
+          List<LecsensData> lecsensDataList = <LecsensData>[];
+
+          switch(filter.toLowerCase()) {
+            case 'mikroplastik':
+              lecsensDataList = value.getMikroplastikData();
+              break;
+            case 'timbal':
+              lecsensDataList = value.getTimbalData();
+              break;
+            case 'merkuri':
+              lecsensDataList = value.getMerkuriData();
+              break;
+            case 'kadmium':
+              lecsensDataList = value.getKadmiumData();
+              break;
+            case 'arsen':
+              lecsensDataList = value.getArsenData();
+              break;
+            default:
+              break;
+          }
+
+          setLecsensDataList(QueryResponse.completed(lecsensDataList));
           notifyListeners();
         } catch (e) {
           Utils.showSnackBar(context, 'Failed to parse voltametry data.');
+          print(e.toString());
           setLecsensDataList(QueryResponse.error('Failed to parse voltametry data.'));
         }
       }).onError((error, stackTrace) {

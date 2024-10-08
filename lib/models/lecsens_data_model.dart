@@ -161,7 +161,6 @@ class LecsensDataList {
   }
 
   List<LecsensData> getMikroplastikData() {
-    print('all data: ${lecsensDataList}');
     return lecsensDataList.where((element) => element.label.toLowerCase() == 'mikroplastik' || element.label.toLowerCase() == 'microplastic').toList();
   }
 
