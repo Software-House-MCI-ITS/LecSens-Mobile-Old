@@ -1,0 +1,2 @@
+C:/Users/Dev/Documents/Project Android/LecSens-Mobile-Old/android/app/.cxx/Debug/4e5v5e5s/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Dev/Documents/Project Android/LecSens-Mobile-Old/android/app/.cxx/Debug/4e5v5e5s/armeabi-v7a/CMakeFiles/rebuild_cache.dir

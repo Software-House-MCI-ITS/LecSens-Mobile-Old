@@ -1,5 +1,5 @@
 class AppUrls {
-  static const baseUrl = "https://dev.lecsens.zeonkun.tech";
+  static const baseUrl = "https://lecsens-api.erplabiim.com";
   static const loginEndPoint = "$baseUrl/users/login";
   static const registerEndPoint = "$baseUrl/users/register";
   static const emailVerificationEndpoint = "$baseUrl/users/verification-email";
